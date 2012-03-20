@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project name="Dojo Build Factory" default="all" basedir="." >
+	
+    <target name="init">
+
+    	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls,dojox/mobile/nls" />
+        <property name="finalFiles"  value="dojo/dojo.js,dojo/cldr/monetary.js,dojo/cldr/supplemental.js,dojo/cldr/nls/currency.js,dojo/cldr/nls/gregorian.js,dojo/cldr/nls/number.js,dojo/nls/colors.js,dojox/mobile.js,dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
+
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
+            </classpath>
+        </taskdef>
+
+    	<property name="src.cmdFile"     value="" 				/>
+        <property name="srcDir"        value="${basedir}/src"      />
+        <property name="targetDir"     value="${basedir}/result"   />
+    	<property name="tmpDir"        value="${basedir}/tmp"      />
+    	<property name="srcCfgDir"        value="${basedir}/srcconfig" />
+
+        <echo message="Ant Version     : ${ant.version}" />
+        <echo message="Base Dir        : ${basedir}"     />
+        <echo message="Source Dir      : ${srcDir}"     />
+        <echo message="Src Config Dir  : ${srcCfgDir}"     />
+        <echo message="Tmp Dir         : ${tmpDir}"     />
+        <echo message="Target Dir      : ${targetDir}"   />
+
+    </target>
+    <target name="prepareSrc" depends="init, cleanSrc">
+        <echo message="Getting Dojo from the source control" />
+    	<exec dir="${srcDir}/"
+    		executable="cmd"
+	        os="${os.name}"
+    	    failonerror="yes">
+			<arg value="/c"/>
+			<arg value="${srcCfgDir}/${src.cmdFile}"/>
+    	</exec>
+    </target>
+
+    <target name="buildDojoFromSCS" depends="init, cleanTmp, prepareSrc, buildDojo">
+        <echo message="Running Dojo build from SCS" />
+    </target>
+
+    <!-- =========================================================================== -->
+	<!-- Targets: dojoBuild -> dojoBuildUnix, dojoBuildWindows                       -->                        
+    <!-- =========================================================================== -->
+    <target name="buildDojo" depends="init,cleanTmp">
+        <echo message="Running Dojo build" />
+    	<exec dir="${srcDir}/util/buildscripts"
+            executable="java"
+            os="${os.name}"
+            failonerror="yes">
+            <arg line=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build -p ../../../profiles/${profileFile} releaseDir=../../tmp baseUrl=../../dojo  basePath=.." />
+        </exec>
+    </target>
+
+    <!-- =========================================================================== -->
+    <!-- Targets: buildTargetApp                                                     -->                        
+    <!-- =========================================================================== -->
+    <target name="buildTargetApp" depends="buildDojo, cleanTarget">
+        <echo message="Copying resources to target dir: ${targetDir}" />
+    	
+    	<for list="${finalDirs}" param="dir">
+    		<sequential>
+        		<echo message="Directory: @{dir}" />
+                <copy todir="${targetDir}/@{dir}">
+                    <fileset dir="${tmpDir}/@{dir}">
+                        <exclude name="**/*.uncompressed.js"/>
+                    </fileset>
+                </copy>
+			</sequential>
+    	</for>
+        <for list="${finalFiles}" param="file">
+            <sequential>
+                <echo message="File: @{file}" />
+                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/@{file}" />
+            </sequential>
+        </for>
+    </target>
+    
+	
+    <!-- =========================================================================== -->
+    <!-- Targets: cleanTmp, cleanTarget, cleanSrc                                    -->                        
+    <!-- =========================================================================== -->
+    <target name="cleanTmp" depends="init">
+        <echo message="Clearing tmp directory: ${tmpDir}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore" />
+        </delete>
+    </target>
+
+	<target name="cleanSrc" depends="init">
+        <echo message="Clearing src directory: ${srcDir}" />
+		<delete includeemptydirs="true">
+		    <fileset dir="${srcDir}" includes="**/*"/>
+		</delete>
+    </target>
+	
+    <target name="cleanTarget" depends="init">
+        <echo message="Clearing target directory: ${targetDir}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore" />
+        </delete>
+    </target>
+    
+    <!-- =========================================================================== -->
+    <!-- Targets: all                                                                -->                        
+    <!-- =========================================================================== -->
+    <target name="all" depends="init,buildDojo,buildTargetApp,cleanTmp" />
+    
+</project>
