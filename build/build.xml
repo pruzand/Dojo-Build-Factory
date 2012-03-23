@@ -98,21 +98,21 @@
     <target name="cleanTmp" depends="init">
         <echo message="Clearing tmp directory: ${tmpDir}" />
         <delete includeemptydirs="true">
-            <fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore" />
+            <fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
         </delete>
     </target>
 
 	<target name="cleanSrc" depends="init">
         <echo message="Clearing src directory: ${srcDir}" />
 		<delete includeemptydirs="true">
-		    <fileset dir="${srcDir}" includes="**/*"/>
+		    <fileset dir="${srcDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore"/>
 		</delete>
     </target>
 	
     <target name="cleanTarget" depends="init">
         <echo message="Clearing target directory: ${targetDir}" />
         <delete includeemptydirs="true">
-            <fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore" />
+            <fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
         </delete>
     </target>
     
