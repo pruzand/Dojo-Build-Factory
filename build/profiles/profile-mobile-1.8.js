@@ -1,27 +1,4 @@
 var profile = {
-	"action"				  : "release",
-
-	// point basePath to ~/dev
-	"basePath"				  : "../../",
-
-	"selectorEngine"		  : "acme",
-	"optimize"				  : "closure",
-	"layerOptimize"			  : "closure",
-	"stripConsole"			  : "normal",
-	"copyTests"				  : false,
-	
-	"cssImportIgnore"		  : "../dijit.css",
-	"cssOptimize"			  : "comments.keepLines",
-	"mini"					  : true,
-	"localeList"			  : "en",
-	"webkitMobile"			  : true,
-
-	// now a typical loader packages configuration
-	packages:[
-		{ name:"dojo"		 , location:"../dojo"		},
-		{ name:"dojox"		 , location:"../dojox"		},
-		{ name:"dijit"		 , location:"../dijit"		}
-	],
 	
 	layers: {
 		"dojo/dojo" : {
@@ -89,7 +66,8 @@ var profile = {
 				"dijit/form/_ToggleButtonMixin",	//charting
 				"dijit/Tooltip"						//charting
 			],
-			exclude: []
+			exclude: [
+			]
 		},
 		"dojox/mobile" : {
 			include: [
@@ -160,9 +138,6 @@ var profile = {
 				"dojox/mobile/SimpleDialog" //1.8
 			],
 			exclude: [
-				"dojo/dojo",
-				"dojox/gfx",
-				"dojox/charting"
 			]
 		},
 
@@ -189,9 +164,6 @@ var profile = {
 				"dojox/gfx/move"
 			],
 			exclude: [
-				"dojo/dojo",
-				"dojox/mobile",
-				"dojox/charting"
 			]
 		},
 		"dojox/charting": {

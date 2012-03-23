@@ -3,8 +3,8 @@
 	
     <target name="init">
 
-    	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls,dojox/mobile/nls" />
-        <property name="finalFiles"  value="dojo/dojo.js,dojo/cldr/monetary.js,dojo/cldr/supplemental.js,dojo/cldr/nls/currency.js,dojo/cldr/nls/gregorian.js,dojo/cldr/nls/number.js,dojo/nls/colors.js,dojox/mobile.js,dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
+    	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls" />
+        <property name="finalFiles"  value="dojo/dojo.js,dojo/cldr/monetary.js,dojo/cldr/supplemental.js,dojo/cldr/nls/currency.js,dojo/cldr/nls/gregorian.js,dojo/cldr/nls/number.js,dojo/nls/colors.js,dojox/mobile.js,dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css,dojox/gfx.js,dojox/charting.js" />
 
         <taskdef resource="net/sf/antcontrib/antlib.xml">
             <classpath>
@@ -12,11 +12,12 @@
             </classpath>
         </taskdef>
 
-    	<property name="src.cmdFile"     value="" 				/>
+    	<property name="src.cmdFile"     value="" 				/>    	
         <property name="srcDir"        value="${basedir}/src"      />
         <property name="targetDir"     value="${basedir}/result"   />
     	<property name="tmpDir"        value="${basedir}/tmp"      />
     	<property name="srcCfgDir"        value="${basedir}/srcconfig" />
+    	<property name="libDir"			value="${basedir}/lib"/>
 
         <echo message="Ant Version     : ${ant.version}" />
         <echo message="Base Dir        : ${basedir}"     />
@@ -26,7 +27,12 @@
         <echo message="Target Dir      : ${targetDir}"   />
 
     </target>
-    <target name="prepareSrc" depends="init, cleanSrc">
+
+	
+    <!-- =========================================================================== -->
+	<!-- Targets: prepareSrc : clean ${srcDir}, copy dojo source files to ${srcDir}	 -->                        
+    <!-- =========================================================================== -->
+	<target name="prepareSrc" depends="init, cleanSrc">
         <echo message="Getting Dojo from the source control" />
     	<exec dir="${srcDir}/"
     		executable="cmd"
@@ -37,20 +43,24 @@
     	</exec>
     </target>
 
-    <target name="buildDojoFromSCS" depends="init, cleanTmp, prepareSrc, buildDojo">
-        <echo message="Running Dojo build from SCS" />
+
+    <!-- =========================================================================== -->
+	<!-- Targets: BuildSrcBuildTargetApp: copy dojo source files and build			 -->                        
+    <!-- =========================================================================== -->
+    <target name="BuildSrcBuildTargetApp" depends="init, cleanTmp, prepareSrc, buildDojo">
+        <echo message="Running Dojo build using SCS" />
     </target>
 
     <!-- =========================================================================== -->
 	<!-- Targets: dojoBuild -> dojoBuildUnix, dojoBuildWindows                       -->                        
     <!-- =========================================================================== -->
     <target name="buildDojo" depends="init,cleanTmp">
-        <echo message="Running Dojo build" />
+        <echo message="Running Dojo build with profile: ${profileFile}" />
     	<exec dir="${srcDir}/util/buildscripts"
             executable="java"
             os="${os.name}"
             failonerror="yes">
-            <arg line=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build -p ../../../profiles/${profileFile} releaseDir=../../tmp baseUrl=../../dojo  basePath=.." />
+            <arg line=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build -p ../../../profiles/${profileFile}.js -p ../../../profiles/env-config.js  baseUrl=../../dojo" />
         </exec>
     </target>
 
@@ -76,6 +86,9 @@
                 <copy file="${tmpDir}/@{file}" toFile="${targetDir}/@{file}" />
             </sequential>
         </for>
+    	<zip destfile="${targetDir}/${profileFile}.zip"
+    		basedir="${targetDir}">
+    	</zip>
     </target>
     
 	
