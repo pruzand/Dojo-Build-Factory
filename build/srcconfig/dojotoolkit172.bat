@@ -1,1 +1,0 @@
-svn export http://svn.dojotoolkit.org/src/tags/release-1.7.2 . --force
