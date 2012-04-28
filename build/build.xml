@@ -1,25 +1,26 @@
 <?xml version="1.0"?>
-<project name="Dojo Build Factory" default="all" basedir="." >
+<project name="DojoBuildFactory" default="all" basedir="." >
 	
     <target name="init">
 
     	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls" />
-        <property name="finalFiles"  value="dojo/dojo.js,dojo/cldr/monetary.js,dojo/cldr/supplemental.js,dojo/cldr/nls/currency.js,dojo/cldr/nls/gregorian.js,dojo/cldr/nls/number.js,dojo/nls/colors.js,dojox/mobile.js,dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css,dojox/gfx.js,dojox/charting.js" />
+        <property name="mobileThemes"  value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
 
         <taskdef resource="net/sf/antcontrib/antlib.xml">
             <classpath>
                 <pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
             </classpath>
         </taskdef>
-
-    	<property name="src.cmdFile"     value="" 				/>    	
         <property name="srcDir"        value="${basedir}/src"      />
         <property name="targetDir"     value="${basedir}/result"   />
+        <property name="libDir"        value="${basedir}/lib"   />
     	<property name="tmpDir"        value="${basedir}/tmp"      />
-    	<property name="srcCfgDir"        value="${basedir}/srcconfig" />
-    	<property name="libDir"			value="${basedir}/lib"/>
-
-        <echo message="Ant Version     : ${ant.version}" />
+    	<property name="profilesDir"   value="${basedir}/profiles" />
+    	<property name="srcCfgDir"     value="${basedir}/srcconfig" />
+    	<property name="featuresDir"   value="${profilesDir}/features"/>
+    	<property name="featuresDefFilename" value="featuresdef.js"/>
+        
+    	<echo message="Ant Version     : ${ant.version}" />
         <echo message="Base Dir        : ${basedir}"     />
         <echo message="Source Dir      : ${srcDir}"     />
         <echo message="Src Config Dir  : ${srcCfgDir}"     />
@@ -28,67 +29,181 @@
 
     </target>
 
+
+    <!-- =========================================================================== -->
+	<!-- Concat features definitions into a the global __layersFeatures				 -->
+	<!-- =========================================================================== -->
+	<target name="concatFeaturesDef" depends="init">
+	   <script language="javascript"> <![CDATA[
+
+	      // import statements
+	      importPackage(java.io);
+	      // Access to Ant-Properties by their names
+	      var dir = project.getProperty("featuresDir");
+	      // Create a <fileset dir="" includes=""/>
+	      var fs = project.createDataType("fileset");
+	      fs.setDir(new File(dir));
+	      fs.setIncludes("*.js");
+	      // Get the files (array) of that fileset
+	      var ds = fs.getDirectoryScanner(project);
+	      var srcFiles = ds.getIncludedFiles();
+	      // iterate over that array
+	      var basedir  = fs.getDir(project);
+	      var lines = [];  
+	   	  for (i=0; i<srcFiles.length; i++) {
+	          // get the values via Java API
+	          var filename = srcFiles[i];
+	          var file = new File(basedir, filename);
+	   		  var reader = new BufferedReader(new FileReader(file));
+	   		  var line = reader.readLine();
+	   		  line = "__layersFeatures."+line;
+		      lines.push(line);
+	   		  while ((line = reader.readLine()) != null) {
+	   		      lines.push(line);
+	   		  }
+	   		  reader.close();
+	   	  }
+	   	  var featuresFile = project.getProperty("featuresDefFilename");
+	   	  file = new File(project.getProperty("profilesDir"), featuresFile);
+	   	  var writer = new BufferedWriter(new FileWriter(file));
+	   	  writer.write("use = function use(){var t = [];for(var i=0;i<arguments.length;++i)t.push(__layersFeatures[arguments[i]]);return Array.prototype.concat.apply([], t);};");
+          writer.newLine();
+	   	  writer.write("__layersFeatures = {};");
+          writer.newLine();
+	   	  var m = lines.length;
+	   	  for (i=0;i<m;++i){
+	   	    //var len = lines[i].length;
+	   			writer.write(lines[i]);
+	   			writer.newLine();
+	   	  }
+	   	  writer.close();
+    	]]> </script>	
+	</target>
 	
     <!-- =========================================================================== -->
-	<!-- Targets: prepareSrc : clean ${srcDir}, copy dojo source files to ${srcDir}	 -->                        
+	<!-- Targets: dojoBuild                  										 -->                        
     <!-- =========================================================================== -->
-	<target name="prepareSrc" depends="init, cleanSrc">
-        <echo message="Getting Dojo from the source control" />
-    	<exec dir="${srcDir}/"
-    		executable="cmd"
-	        os="${os.name}"
-    	    failonerror="yes">
-			<arg value="/c"/>
-			<arg value="${srcCfgDir}/${src.cmdFile}"/>
-    	</exec>
-    </target>
-
-
-    <!-- =========================================================================== -->
-	<!-- Targets: BuildSrcBuildTargetApp: copy dojo source files and build			 -->                        
-    <!-- =========================================================================== -->
-    <target name="BuildSrcBuildTargetApp" depends="init, cleanTmp, prepareSrc, buildDojo">
-        <echo message="Running Dojo build using SCS" />
-    </target>
-
-    <!-- =========================================================================== -->
-	<!-- Targets: dojoBuild -> dojoBuildUnix, dojoBuildWindows                       -->                        
-    <!-- =========================================================================== -->
-    <target name="buildDojo" depends="init,cleanTmp">
+    <target name="buildDojo" depends="init,cleanTmp, concatFeaturesDef">
         <echo message="Running Dojo build with profile: ${profileFile}" />
+    	<if> 
+    	   <isset property="localeListParam"/> 
+    	<then>
+    		<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
+    	</then>
+    	<else>
+    		<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo "/>
+    	</else>
+    	</if>
+        <echo message="Running Dojo build with arg: ${buildArgs}" />
     	<exec dir="${srcDir}/util/buildscripts"
             executable="java"
             os="${os.name}"
             failonerror="yes">
-            <arg line=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build -p ../../../profiles/${profileFile}.js -p ../../../profiles/env-config.js  baseUrl=../../dojo" />
+            <arg line="${buildArgs}" />
         </exec>
     </target>
-
+	
     <!-- =========================================================================== -->
-    <!-- Targets: buildTargetApp                                                     -->                        
+	<!-- extract layers names from build-report.txt 								 -->
+	<!-- =========================================================================== -->
+	<target name="extractLayersNames" depends="init">
+        <loadfile property="report" srcFile="${tmpDir}/build-report.txt"/>
+    	<script language="javascript"> <![CDATA[
+    		rep  = report.slice(report.indexOf("Layer Contents:")+String("Layer Contents:").length, report.indexOf("Process "));
+    		var regexp = new RegExp("([-A-Za-z_/-A-Za-z_]*):","g");
+    		var layers = rep.match(regexp);
+    		var names = [];
+    		var nlsPaths = [];
+    		if(layers){
+	    		for (var i=0;i<layers.length;++i){
+	    			layers[i]= layers[i].slice(0,-1);
+    				names.push(layers[i].split("/").pop());
+    				var p = layers[i].lastIndexOf("/");
+    				nlsPaths.push(p !== -1 ? layers[i].slice(0,p)+"/nls/"+names[i] : names[i]);
+	    		}
+    		}
+    		layers = layers.join(",");
+    		self.getProject().setProperty("layersFiles", layers);	
+    		self.getProject().setProperty("layersNames", names);	
+    		self.getProject().setProperty("layersNls", nlsPaths);	
+    	]]> </script>
+		<echo message="${layersFiles}"/>
+	</target>
+	
     <!-- =========================================================================== -->
-    <target name="buildTargetApp" depends="buildDojo, cleanTarget">
-        <echo message="Copying resources to target dir: ${targetDir}" />
-    	
-    	<for list="${finalDirs}" param="dir">
-    		<sequential>
-        		<echo message="Directory: @{dir}" />
-                <copy todir="${targetDir}/@{dir}">
-                    <fileset dir="${tmpDir}/@{dir}">
-                        <exclude name="**/*.uncompressed.js"/>
-                    </fileset>
-                </copy>
-			</sequential>
-    	</for>
-        <for list="${finalFiles}" param="file">
+	<!-- copy the layers 															 -->
+    <!-- =========================================================================== -->
+    <target name="copyLayers" depends="extractLayersNames">
+		<for list="${layersFiles}" param="file">
+	        <sequential>
+	            <echo message="File: @{file}.js" />
+	            <copy file="${tmpDir}/@{file}.js" toFile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true"/>
+	            <copy file="${tmpDir}/@{file}.js.uncompressed.js" toFile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true"/>
+	        </sequential>
+	    </for>
+	</target>
+	
+    <!-- =========================================================================== -->
+	<!-- copy the mobile css themes													 -->
+    <!-- =========================================================================== -->
+	<target name="copyMobileThemes" depends="init">
+        <for list="${mobileThemes}" param="file">
             <sequential>
                 <echo message="File: @{file}" />
-                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/@{file}" />
+                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false"/>
+                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false"/>
             </sequential>
-        </for>
+    	</for>
+	</target>
+
+    <!-- =========================================================================== -->
+	<!-- copy possible nls bundles													 -->
+    <!-- =========================================================================== -->
+	<target name="copyNlsBundles" depends="init,extractLayersNames">
+		<for list="${layersNls}" param="file">
+	        <sequential>
+                <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
+                    <fileset dir="${tmpDir}" includes="@{file}_*.js" />
+                </copy>
+                <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
+                    <fileset dir="${tmpDir}" includes="@{file}_*.js" />
+                </copy>
+	        </sequential>
+	    </for>
+	</target>
+	
+	
+    <!-- =========================================================================== -->
+    <!-- Targets: buildLayers		                                                 -->                        
+    <!-- =========================================================================== -->
+    <target name="buildLayers" depends="buildDojo, cleanTarget">
+        
+    	<echo message="Copying resources to target dir: ${targetDir}" />
+    	
+    	<!-- copy layers -->
+    	<antcall target="copyLayers" />
+    	
+    	<!-- copy mobile css -->
+    	<antcall target="copyMobileThemes" />
+    	
+    	<!-- copy nls bundles file -->
+    	<antcall target="copyNlsBundles"/>
+
+    	<!-- copy build report file -->
+        <echo message="Copy build report to ${targetDir}" />
+        <copy file="${tmpDir}/build-report.txt" todir="${targetDir}/" />
+
+    	<!-- copy build profiles file -->
+        <echo message="Copy build profiles to ${targetDir}" />
+        <copy file="${profilesDir}/${profileFile}.js" todir="${targetDir}/" />
+        <copy file="${profilesDir}/env-config.js" todir="${targetDir}/" />
+
+    	<!-- zip the result -->
     	<zip destfile="${targetDir}/${profileFile}.zip"
     		basedir="${targetDir}">
     	</zip>
+    	
+    	
     </target>
     
 	
@@ -119,6 +234,6 @@
     <!-- =========================================================================== -->
     <!-- Targets: all                                                                -->                        
     <!-- =========================================================================== -->
-    <target name="all" depends="init,buildDojo,buildTargetApp,cleanTmp" />
+    <target name="all" depends="buildLayers,cleanTmp" />
     
 </project>

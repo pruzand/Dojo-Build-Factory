@@ -1,0 +1,21 @@
+graphics = [
+	"dojox/gfx",
+	"dojox/gfx/_base",
+	"dojox/gfx/arc",
+	"dojox/gfx/_gfxBidiSupport",
+	"dojox/gfx/renderer",
+	"dojox/gfx/canvasWithEvents",
+	"dojox/gfx/decompose",
+	"dojox/gfx/fx",
+	"dojox/gfx/gradient",
+	"dojox/gfx/gradutils",
+	"dojox/gfx/matrix",
+	"dojox/gfx/Moveable",
+	"dojox/gfx/Mover",
+	"dojox/gfx/path",
+	"dojox/gfx/shape",
+	"dojox/gfx/svg",
+	"dojox/gfx/utils",
+	"dojox/gfx/VectorText",
+	"dojox/gfx/move"
+];
