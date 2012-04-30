@@ -1,10 +1,10 @@
 common_ui = [
-	"dijit/_base/manager", //mobile
+	"dijit/_base/manager", //mobile, treemap
 	"dijit/_BidiSupport", //charting
 	"dijit/_Contained", //mobile
 	"dijit/_Container", //mobile
 	"dijit/_CssStateMixin", //charting
-	"dijit/_FocusMixin", //charting
+	"dijit/_FocusMixin", //charting, treemap
 	"dijit/_KeyNavContainer", // calendar
 	"dijit/_OnDijitClickMixin", //charting
 	"dijit/_TemplatedMixin",//charting
@@ -28,9 +28,9 @@ common_ui = [
 	"dijit/form/CheckBox", //charting
 	"dijit/form/ToggleButton", //charting
 	"dijit/hccss", //charting
-	"dijit/main", // mobile
+	"dijit/main", // mobile, treemap
 	"dijit/place", // mobile
-	"dijit/registry", // mobile
+	"dijit/registry", // mobile, treemap
 	"dijit/ToolbarSeparator", // calendar
 	"dijit/Tooltip", // charting,
 	"dijit/Toolbar"	// calendar

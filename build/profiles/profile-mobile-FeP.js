@@ -59,7 +59,24 @@ var profile = (function(){
 			"dojo/calendar-layer": {
 				include: use("calendar"),
 				exclude:[
+					"dojo/core-web-layer",
+					"dojo/mobile-ui-layer"
+				]
+			},
+			
+			"dojo/treemap-layer": {
+				include: use("treemap"),
+				exclude:[
 					"dojo/core-web-layer"
+				]
+			},
+			
+			"dojo/dgauges-layer":{
+				include: use("dgauges"),
+				exclude:[
+					"dojo/core-web-layer",
+					"dojo/mobile-ui-layer",
+					"dojo/graphics-layer"
 				]
 			}
 			

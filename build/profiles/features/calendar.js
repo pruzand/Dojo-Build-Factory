@@ -20,5 +20,8 @@ calendar = [
 	"dojox/calendar/time",
 	"dojox/calendar/Touch",
 	"dojox/calendar/VerticalRenderer",
-	"dojox/calendar/ViewBase"
+	"dojox/calendar/ViewBase",
+	"dojox/widget/_Invalidating",
+	"dojox/widget/Selection",
+	"dojox/html/metrics"
 ];
