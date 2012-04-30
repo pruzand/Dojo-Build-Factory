@@ -125,9 +125,16 @@
     		layers = layers.join(",");
     		self.getProject().setProperty("layersFiles", layers);	
     		self.getProject().setProperty("layersNames", names);	
-    		self.getProject().setProperty("layersNls", nlsPaths);	
-    	]]> </script>
-		<echo message="${layersFiles}"/>
+    		self.getProject().setProperty("layersNls", nlsPaths);
+    		regexp = new RegExp("[-A-Za-z_/0-9]*[^:\r\n\t]","g");
+    		var modules = rep.match(regexp);
+    		for (i=0;i<modules.length;++i){
+    			modules[i] = modules[i]+".*";
+    		}
+    		self.getProject().setProperty("layeredModules", modules.join(","));    		
+    	]]> 
+    	</script>
+		<echo message="layeredModules: ${layeredModules}"/>
 	</target>
 	
     <!-- =========================================================================== -->
@@ -171,7 +178,18 @@
 	        </sequential>
 	    </for>
 	</target>
-	
+
+    <!-- =========================================================================== -->
+	<!-- copy the loose modules														 -->
+    <!-- =========================================================================== -->
+	<target name="copyLooseModules" depends="init, extractLayersNames">
+        <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
+            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/*.js" />
+        </copy>
+        <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
+            <fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/*.uncompressed.js" />
+        </copy>
+	</target>
 	
     <!-- =========================================================================== -->
     <!-- Targets: buildLayers		                                                 -->                        
@@ -189,6 +207,10 @@
     	<!-- copy nls bundles file -->
     	<antcall target="copyNlsBundles"/>
 
+    	<!-- copy loose modules file -->
+    	<antcall target="copyLooseModules"/>
+    	
+    	
     	<!-- copy build report file -->
         <echo message="Copy build report to ${targetDir}" />
         <copy file="${tmpDir}/build-report.txt" todir="${targetDir}/" />

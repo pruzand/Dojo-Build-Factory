@@ -1,12 +1,4 @@
 var profile = (function(){
-/*	
-	function use(){
-		var t = [];
-		for(var i=0;i<arguments.length;++i)
-			t.push(__layersFeatures[arguments[i]]);
-		return Array.prototype.concat.apply([], t);
-	};
-	*/
 	return {
 		staticHasFeatures: {
 	        // The trace & log APIs are used for debugging the loader, so we don’t need them in the build
@@ -36,6 +28,14 @@ var profile = (function(){
 				]
 			},
 			
+			"dojo/mobile-compat":{
+				include: use("mobile_compat"),
+				exclude: [
+				    "dojo/core-web-layer",
+				    "dojo/mobile-ui-layer"
+				]
+			},
+			
 			"dojo/core-web-layer": {
 				include: use("dojo_core_web", "common_ui")
 			},
@@ -53,6 +53,13 @@ var profile = (function(){
 					"dojo/core-web-layer",
 					"dojo/mobile-ui-layer",
 					"dojo/graphics-layer"
+				]
+			},
+			
+			"dojo/calendar-layer": {
+				include: use("calendar"),
+				exclude:[
+					"dojo/core-web-layer"
 				]
 			}
 			

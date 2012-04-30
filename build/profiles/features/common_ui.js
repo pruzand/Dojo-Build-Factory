@@ -5,10 +5,12 @@ common_ui = [
 	"dijit/_Container", //mobile
 	"dijit/_CssStateMixin", //charting
 	"dijit/_FocusMixin", //charting
+	"dijit/_KeyNavContainer", // calendar
 	"dijit/_OnDijitClickMixin", //charting
 	"dijit/_TemplatedMixin",//charting
 	"dijit/_Widget", //charting
 	"dijit/_WidgetBase", //mobile
+	"dijit/_WidgetsInTemplateMixin", // calendar
 	"dijit/a11y", //mobile
 	"dijit/BackgroundIframe", //charting
 	"dijit/focus", //charting
@@ -29,5 +31,7 @@ common_ui = [
 	"dijit/main", // mobile
 	"dijit/place", // mobile
 	"dijit/registry", // mobile
-	"dijit/Tooltip" // charting
+	"dijit/ToolbarSeparator", // calendar
+	"dijit/Tooltip", // charting,
+	"dijit/Toolbar"	// calendar
 ];

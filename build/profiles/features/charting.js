@@ -17,6 +17,8 @@ charting = [
 	"dojox/charting/BidiSupport",
 	"dojox/charting/Chart",
 	"dojox/charting/Chart2D",
+	"dojox/charting/DataChart",
+	"dojox/charting/DataSeries",
 	"dojox/charting/Element",
 	"dojox/charting/Series",
 	"dojox/charting/StoreSeries",
