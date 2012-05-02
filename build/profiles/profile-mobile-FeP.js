@@ -28,7 +28,7 @@ var profile = (function(){
 				]
 			},
 			
-			"dojo/mobile-compat":{
+			"dojo/mobile-compat-layer":{
 				include: use("mobile_compat"),
 				exclude: [
 				    "dojo/core-web-layer",
