@@ -19,7 +19,15 @@
     	<property name="srcCfgDir"     value="${basedir}/srcconfig" />
     	<property name="featuresDir"   value="${profilesDir}/features"/>
     	<property name="featuresDefFilename" value="featuresdef.js"/>
-        
+
+    	<property name="jscompjar"
+    	  location="${libDir}/compiler.jar" />
+
+    	<taskdef name="jscomp"
+    	  classname="com.google.javascript.jscomp.ant.CompileTask"
+    	  classpath="${jscompjar}"/>    	
+    	
+    	
     	<echo message="Ant Version     : ${ant.version}" />
         <echo message="Base Dir        : ${basedir}"     />
         <echo message="Source Dir      : ${srcDir}"     />
@@ -34,50 +42,21 @@
 	<!-- Concat features definitions into a the global __layersFeatures				 -->
 	<!-- =========================================================================== -->
 	<target name="concatFeaturesDef" depends="init">
-	   <script language="javascript"> <![CDATA[
-
-	      // import statements
-	      importPackage(java.io);
-	      // Access to Ant-Properties by their names
-	      var dir = project.getProperty("featuresDir");
-	      // Create a <fileset dir="" includes=""/>
-	      var fs = project.createDataType("fileset");
-	      fs.setDir(new File(dir));
-	      fs.setIncludes("*.js");
-	      // Get the files (array) of that fileset
-	      var ds = fs.getDirectoryScanner(project);
-	      var srcFiles = ds.getIncludedFiles();
-	      // iterate over that array
-	      var basedir  = fs.getDir(project);
-	      var lines = [];  
-	   	  for (i=0; i<srcFiles.length; i++) {
-	          // get the values via Java API
-	          var filename = srcFiles[i];
-	          var file = new File(basedir, filename);
-	   		  var reader = new BufferedReader(new FileReader(file));
-	   		  var line = reader.readLine();
-	   		  line = "__layersFeatures."+line;
-		      lines.push(line);
-	   		  while ((line = reader.readLine()) != null) {
-	   		      lines.push(line);
-	   		  }
-	   		  reader.close();
-	   	  }
-	   	  var featuresFile = project.getProperty("featuresDefFilename");
-	   	  file = new File(project.getProperty("profilesDir"), featuresFile);
-	   	  var writer = new BufferedWriter(new FileWriter(file));
-	   	  writer.write("use = function use(){var t = [];for(var i=0;i<arguments.length;++i)t.push(__layersFeatures[arguments[i]]);return Array.prototype.concat.apply([], t);};");
-          writer.newLine();
-	   	  writer.write("__layersFeatures = {};");
-          writer.newLine();
-	   	  var m = lines.length;
-	   	  for (i=0;i<m;++i){
-	   	    //var len = lines[i].length;
-	   			writer.write(lines[i]);
-	   			writer.newLine();
-	   	  }
-	   	  writer.close();
-    	]]> </script>	
+		<delete file="${profilesDir}/featuresdef.js"/>
+		<concat destfile="${profilesDir}/featuresdef.tmp">
+			<fileset dir="${featuresDir}" includes="*.js" />
+			<filterchain>
+				<replaceregex pattern="([\w\s-_]*)=" replace="__layersFeatures.\1=" />
+			</filterchain>
+		</concat>
+		<concat destfile="${profilesDir}/featuresdef.js" force="true">
+			<header><![CDATA[
+use = function use(){var t = [];for(var i=0;i<arguments.length;++i)t.push(__layersFeatures[arguments[i]]);return Array.prototype.concat.apply([], t);};
+__layersFeatures = {};
+]]></header>
+			<filelist dir="${profilesDir}" files="featuresdef.tmp"></filelist>
+		</concat>
+		<delete file="${profilesDir}/featuresdef.tmp"/>
 	</target>
 	
     <!-- =========================================================================== -->
@@ -106,7 +85,7 @@
     <!-- =========================================================================== -->
 	<!-- extract layers names from build-report.txt 								 -->
 	<!-- =========================================================================== -->
-	<target name="extractLayersNames">
+	<target name="extractLayersData" depends="init">
 		<echo message="Processing build-report to extract layers data..."/>
         <loadfile property="report" srcFile="${tmpDir}/build-report.txt"/>
     	<script language="javascript"> <![CDATA[
@@ -124,7 +103,7 @@
 	    		}
     		}
     		layers = layers.join(",");
-    		self.getProject().setProperty("layersFiles", layers);	
+    		DojoBuildFactory.setProperty("layersFiles", layers);	
     		self.getProject().setProperty("layersNames", names);	
     		self.getProject().setProperty("layersNls", nlsPaths);
     		regexp = new RegExp("[-A-Za-z_/0-9]*[^:\r\n\t]","g");
@@ -136,12 +115,14 @@
     	]]> 
     	</script>
 		<echo message="layeredModules: ${layeredModules}"/>
+		<echo message="layersFiles: ${layersFiles}"/>
 	</target>
 	
     <!-- =========================================================================== -->
 	<!-- copy the layers 															 -->
     <!-- =========================================================================== -->
-    <target name="copyLayers" depends="extractLayersNames">
+    <target name="copyLayers">
+    	<echo message="Copying layers..."/>
 		<for list="${layersFiles}" param="file">
 	        <sequential>
 	            <echo message="File: @{file}.js" />
@@ -155,6 +136,7 @@
 	<!-- copy the mobile css themes													 -->
     <!-- =========================================================================== -->
 	<target name="copyMobileThemes" >
+		<echo message="Copying mobile themes..."/>
         <for list="${mobileThemes}" param="file">
             <sequential>
                 <echo message="File: @{file}" />
@@ -163,19 +145,47 @@
             </sequential>
     	</for>
 	</target>
-
+	
     <!-- =========================================================================== -->
 	<!-- copy possible nls bundles													 -->
     <!-- =========================================================================== -->
-	<target name="copyNlsBundles" depends="extractLayersNames">
+	<target name="copyNlsBundles">
+		<echo message="Copying Nls Bundles..."/>
 		<for list="${layersNls}" param="file">
 	        <sequential>
-                <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
+	        	<!-- copy uncompressed first --> 
+	            <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
                     <fileset dir="${tmpDir}" includes="@{file}_*.js" />
                 </copy>
-                <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
+	        	<!-- copy compressed files--> 
+	        	<copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
                     <fileset dir="${tmpDir}" includes="@{file}_*.js" />
                 </copy>
+	        </sequential>
+	    </for>
+    	<!-- then compressed nls bundles 									-->
+    	<!-- workaround dojo build 1.7.2 bug: does not compress nls bundles	-->
+		<echo message="Compressing Nls bundles..."/>
+		<for list="${layersNls}" param="file" keepgoing="true">
+	        <sequential>
+	        	<for param="bundle" keepgoing="true">
+	        		<path>
+	                  	<fileset dir="${targetDir}/compressed" includes="@{file}_*.js" />
+	        		</path>
+	    	        <sequential>
+	    	        	<echo message="bundle:@{bundle}"/>
+	    	        	<basename property="srcname@{bundle}" file="@{bundle}" />
+	    	        	<echo message="srcname:${srcname@{bundle}}"/>
+	    	        	<dirname property="srcBundleDir" file="@{bundle}" />
+						<jscomp compilationLevel="simple" warning="quiet" debug="false" 
+							output="${srcBundleDir}/${srcname@{bundle}}.compressed">
+							<sources dir="${srcBundleDir}">
+								<file name="${srcname@{bundle}}"/>
+							</sources>
+						</jscomp>
+	    	        	<move file="${srcBundleDir}/${srcname@{bundle}}.compressed" tofile="${srcBundleDir}/${srcname@{bundle}}" overwrite="true" verbose="true"/>
+			        </sequential>
+				</for>
 	        </sequential>
 	    </for>
 	</target>
@@ -183,9 +193,10 @@
     <!-- =========================================================================== -->
 	<!-- copy the loose modules														 -->
     <!-- =========================================================================== -->
-	<target name="copyLooseModules" depends="extractLayersNames">
+	<target name="copyLooseModules" depends="extractLayersData">
+		<echo message="Copying loose modules..."/>
         <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
-            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/*.js" />
+            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/*" />
         </copy>
         <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
             <fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/*.uncompressed.js" />
@@ -200,18 +211,22 @@
         
     	<echo message="Copying resources to target dir: ${targetDir}" />
     	
-    	<!-- copy layers -->
-    	<antcall target="copyLayers" />
+    	<antcall> 
+	    	<!-- Process layers data from build report -->
+    		<target name="extractLayersData"/>
     	
-    	<!-- copy mobile css -->
-    	<antcall target="copyMobileThemes" />
+    		<!-- copy layers -->
+    		<target name="copyLayers" />
     	
-    	<!-- copy nls bundles file -->
-    	<antcall target="copyNlsBundles"/>
+    		<!-- copy mobile css -->
+    		<target name="copyMobileThemes" />
 
-    	<!-- copy loose modules file -->
-    	<antcall target="copyLooseModules"/>
+    		<!-- copy loose modules file -->
+    		<target name="copyLooseModules"/>
     	
+    		<!-- copy nls bundles file -->
+    		<target name="copyNlsBundles"/>
+    	</antcall>
     	
     	<!-- copy build report file -->
         <echo message="Copy build report to ${targetDir}" />
