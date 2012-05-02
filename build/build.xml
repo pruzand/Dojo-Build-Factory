@@ -106,7 +106,8 @@
     <!-- =========================================================================== -->
 	<!-- extract layers names from build-report.txt 								 -->
 	<!-- =========================================================================== -->
-	<target name="extractLayersNames" depends="init">
+	<target name="extractLayersNames">
+		<echo message="Processing build-report to extract layers data..."/>
         <loadfile property="report" srcFile="${tmpDir}/build-report.txt"/>
     	<script language="javascript"> <![CDATA[
     		rep  = report.slice(report.indexOf("Layer Contents:")+String("Layer Contents:").length, report.indexOf("Process "));
@@ -153,7 +154,7 @@
     <!-- =========================================================================== -->
 	<!-- copy the mobile css themes													 -->
     <!-- =========================================================================== -->
-	<target name="copyMobileThemes" depends="init">
+	<target name="copyMobileThemes" >
         <for list="${mobileThemes}" param="file">
             <sequential>
                 <echo message="File: @{file}" />
@@ -166,7 +167,7 @@
     <!-- =========================================================================== -->
 	<!-- copy possible nls bundles													 -->
     <!-- =========================================================================== -->
-	<target name="copyNlsBundles" depends="init,extractLayersNames">
+	<target name="copyNlsBundles" depends="extractLayersNames">
 		<for list="${layersNls}" param="file">
 	        <sequential>
                 <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
@@ -182,12 +183,13 @@
     <!-- =========================================================================== -->
 	<!-- copy the loose modules														 -->
     <!-- =========================================================================== -->
-	<target name="copyLooseModules" depends="init, extractLayersNames">
+	<target name="copyLooseModules" depends="extractLayersNames">
         <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
             <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/*.js" />
         </copy>
         <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
             <fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/*.uncompressed.js" />
+        	<mapper type="regexp" from="(.*).uncompressed.js" to="\1"/>
         </copy>
 	</target>
 	
