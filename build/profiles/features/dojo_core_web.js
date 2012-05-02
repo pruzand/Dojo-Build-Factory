@@ -30,6 +30,7 @@ dojo_core_web = [
 	"dojo/dom-prop",
 	"dojo/domReady",
 	"dojo/dom-style",
+	"dojo/nls/colors",
 	"dojo/Evented",
 	"dojo/fx",
 	"dojo/fx/easing",
