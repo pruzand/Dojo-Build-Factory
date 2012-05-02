@@ -5,6 +5,8 @@
 
     	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls" />
         <property name="mobileThemes"  value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
+        <property name="mobileCompatThemes"  value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
+        <property name="mobileCompatResDir"  value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
 
         <taskdef resource="net/sf/antcontrib/antlib.xml">
             <classpath>
@@ -135,7 +137,7 @@ __layersFeatures = {};
     <!-- =========================================================================== -->
 	<!-- copy the mobile css themes													 -->
     <!-- =========================================================================== -->
-	<target name="copyMobileThemes" >
+	<target name="copyMobileThemes" depends="init">
 		<echo message="Copying mobile themes..."/>
         <for list="${mobileThemes}" param="file">
             <sequential>
@@ -144,6 +146,40 @@ __layersFeatures = {};
                 <copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false"/>
             </sequential>
     	</for>
+		<!-- compat themes -->
+		<echo message="Copying mobile compat themes..."/>
+		<for list="${mobileCompatThemes}" param="file">
+			<sequential>
+                <echo message="File: @{file}" />
+                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false"/>
+                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false"/>
+			</sequential>
+		</for>
+		<!-- compat resources -->
+		<echo message="Copying mobile compat resources..."/>
+		<for list="${mobileCompatResDir}" param="dir">
+			<sequential>
+				<echo message="dir=@{dir}"/>
+                <copy todir="${targetDir}/compressed/@{dir}" failonerror="false" verbose="true" overwrite="true" >
+                	<fileset dir="${tmpDir}/@{dir}" includes="**/*"/>
+                </copy>
+                <copy todir="${targetDir}/uncompressed/@{dir}" failonerror="false" verbose="true" overwrite="true" >
+                	<fileset dir="${tmpDir}/@{dir}" includes="**/*"/>
+                </copy>
+			</sequential>
+		</for>
+		<!-- dijit resources -->
+		<echo message="Copying mobile dijit resources..."/>
+		<for list="android,blackberry,iphone" param="os">
+			<sequential>
+    	        <copy todir="${targetDir}/compressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true" >
+	            	<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less"/>
+	            </copy>
+    	        <copy todir="${targetDir}/uncompressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true" >
+	            	<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less"/>
+	            </copy>
+   			</sequential>
+		</for>
 	</target>
 	
     <!-- =========================================================================== -->
@@ -196,10 +232,10 @@ __layersFeatures = {};
 	<target name="copyLooseModules" depends="extractLayersData">
 		<echo message="Copying loose modules..."/>
         <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
-            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/*" />
+            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js,**/mobile/**,build-report.txt" includes="**/*" />
         </copy>
         <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
-            <fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/*.uncompressed.js" />
+            <fileset dir="${tmpDir}" excludes="${layeredModules},**/mobile/**,build-report.txt" includes="**/*.uncompressed.js,**/*" />
         	<mapper type="regexp" from="(.*).uncompressed.js" to="\1"/>
         </copy>
 	</target>

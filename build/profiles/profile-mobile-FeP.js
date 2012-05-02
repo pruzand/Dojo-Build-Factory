@@ -78,8 +78,14 @@ var profile = (function(){
 					"dojo/mobile-ui-layer",
 					"dojo/graphics-layer"
 				]
-			}
+			},
 			
+			"dojo/dijit-layer":{
+				include: use("dijit"),
+				exclude:[
+					"dojo/core-web-layer"
+				]
+			}
 		}
 	};	
 })();
