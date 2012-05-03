@@ -1,50 +1,47 @@
 <?xml version="1.0"?>
-<project name="DojoBuildFactory" default="all" basedir="." >
-	
-    <target name="init">
+<project name="DojoBuildFactory" default="all" basedir=".">
 
-    	<property name="finalDirs"   value="dojo/cldr/nls/en,dojo/nls" />
-        <property name="mobileThemes"  value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
-        <property name="mobileCompatThemes"  value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
-        <property name="mobileCompatResDir"  value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
+	<target name="init">
 
-        <taskdef resource="net/sf/antcontrib/antlib.xml">
-            <classpath>
-                <pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
-            </classpath>
-        </taskdef>
-        <property name="srcDir"        value="${basedir}/src"      />
-        <property name="targetDir"     value="${basedir}/result"   />
-        <property name="libDir"        value="${basedir}/lib"   />
-    	<property name="tmpDir"        value="${basedir}/tmp"      />
-    	<property name="profilesDir"   value="${basedir}/profiles" />
-    	<property name="srcCfgDir"     value="${basedir}/srcconfig" />
-    	<property name="featuresDir"   value="${profilesDir}/features"/>
-    	<property name="featuresDefFilename" value="featuresdef.js"/>
+		<property name="finalDirs" value="dojo/cldr/nls/en,dojo/nls" />
+		<property name="mobileThemes" value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
+		<property name="mobileCompatThemes" value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
+		<property name="mobileCompatResDir" value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
 
-    	<property name="jscompjar"
-    	  location="${libDir}/compiler.jar" />
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
+			</classpath>
+		</taskdef>
+		<property name="srcDir" value="${basedir}/src" />
+		<property name="targetDir" value="${basedir}/result" />
+		<property name="libDir" value="${basedir}/lib" />
+		<property name="tmpDir" value="${basedir}/tmp" />
+		<property name="profilesDir" value="${basedir}/profiles" />
+		<property name="srcCfgDir" value="${basedir}/srcconfig" />
+		<property name="featuresDir" value="${profilesDir}/features" />
+		<property name="featuresDefFilename" value="featuresdef.js" />
 
-    	<taskdef name="jscomp"
-    	  classname="com.google.javascript.jscomp.ant.CompileTask"
-    	  classpath="${jscompjar}"/>    	
-    	
-    	
-    	<echo message="Ant Version     : ${ant.version}" />
-        <echo message="Base Dir        : ${basedir}"     />
-        <echo message="Source Dir      : ${srcDir}"     />
-        <echo message="Src Config Dir  : ${srcCfgDir}"     />
-        <echo message="Tmp Dir         : ${tmpDir}"     />
-        <echo message="Target Dir      : ${targetDir}"   />
+		<property name="jscompjar" location="${libDir}/compiler.jar" />
 
-    </target>
+		<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="${jscompjar}" />
 
 
-    <!-- =========================================================================== -->
+		<echo message="Ant Version     : ${ant.version}" />
+		<echo message="Base Dir        : ${basedir}" />
+		<echo message="Source Dir      : ${srcDir}" />
+		<echo message="Src Config Dir  : ${srcCfgDir}" />
+		<echo message="Tmp Dir         : ${tmpDir}" />
+		<echo message="Target Dir      : ${targetDir}" />
+
+	</target>
+
+
+	<!-- =========================================================================== -->
 	<!-- Concat features definitions into a the global __layersFeatures				 -->
 	<!-- =========================================================================== -->
 	<target name="concatFeaturesDef" depends="init">
-		<delete file="${profilesDir}/featuresdef.js"/>
+		<delete file="${profilesDir}/featuresdef.js" />
 		<concat destfile="${profilesDir}/featuresdef.tmp">
 			<fileset dir="${featuresDir}" includes="*.js" />
 			<filterchain>
@@ -52,45 +49,46 @@
 			</filterchain>
 		</concat>
 		<concat destfile="${profilesDir}/featuresdef.js" force="true">
-			<header><![CDATA[
+			<header>
+				<![CDATA[
 use = function use(){var t = [];for(var i=0;i<arguments.length;++i)t.push(__layersFeatures[arguments[i]]);return Array.prototype.concat.apply([], t);};
 __layersFeatures = {};
-]]></header>
-			<filelist dir="${profilesDir}" files="featuresdef.tmp"></filelist>
+]]>
+			</header>
+			<filelist dir="${profilesDir}" files="featuresdef.tmp">
+			</filelist>
 		</concat>
-		<delete file="${profilesDir}/featuresdef.tmp"/>
+		<delete file="${profilesDir}/featuresdef.tmp" />
 	</target>
-	
-    <!-- =========================================================================== -->
-	<!-- Targets: dojoBuild                  										 -->                        
-    <!-- =========================================================================== -->
-    <target name="buildDojo" depends="init,cleanTmp, concatFeaturesDef">
-        <echo message="Running Dojo build with profile: ${profileFile}" />
-    	<if> 
-    	   <isset property="localeListParam"/> 
-    	<then>
-    		<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
-    	</then>
-    	<else>
-    		<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo "/>
-    	</else>
-    	</if>
-        <echo message="Running Dojo build with arg: ${buildArgs}" />
-    	<exec dir="${srcDir}/util/buildscripts"
-            executable="java"
-            os="${os.name}"
-            failonerror="yes">
-            <arg line="${buildArgs}" />
-        </exec>
-    </target>
-	
-    <!-- =========================================================================== -->
+
+	<!-- =========================================================================== -->
+	<!-- Targets: dojoBuild                  										 -->
+	<!-- =========================================================================== -->
+	<target name="buildDojo" depends="init,cleanTmp, concatFeaturesDef">
+		<echo message="Running Dojo build with profile: ${profileFile}" />
+		<if>
+			<isset property="localeListParam" />
+			<then>
+				<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
+			</then>
+			<else>
+				<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo " />
+			</else>
+		</if>
+		<echo message="Running Dojo build with arg: ${buildArgs}" />
+		<exec dir="${srcDir}/util/buildscripts" executable="java" os="${os.name}" failonerror="yes">
+			<arg line="${buildArgs}" />
+		</exec>
+	</target>
+
+	<!-- =========================================================================== -->
 	<!-- extract layers names from build-report.txt 								 -->
 	<!-- =========================================================================== -->
 	<target name="extractLayersData" depends="init">
-		<echo message="Processing build-report to extract layers data..."/>
-        <loadfile property="report" srcFile="${tmpDir}/build-report.txt"/>
-    	<script language="javascript"> <![CDATA[
+		<echo message="Processing build-report to extract layers data..." />
+		<loadfile property="report" srcFile="${tmpDir}/build-report.txt" />
+		<script language="javascript">
+			<![CDATA[
     		rep  = report.slice(report.indexOf("Layer Contents:")+String("Layer Contents:").length, report.indexOf("Process "));
     		var regexp = new RegExp("([-A-Za-z_/-A-Za-z_]*):","g");
     		var layers = rep.match(regexp);
@@ -110,205 +108,220 @@ __layersFeatures = {};
     		self.getProject().setProperty("layersNls", nlsPaths);
     		regexp = new RegExp("[-A-Za-z_/0-9]*[^:\r\n\t]","g");
     		var modules = rep.match(regexp);
-    		for (i=0;i<modules.length;++i){
+    		var uncompressedLayered = [];
+			for (i=0;i<modules.length;++i){
+				uncompressedLayered[i] = modules[i]+"*.uncompressed.*"
     			modules[i] = modules[i]+".*";
     		}
     		self.getProject().setProperty("layeredModules", modules.join(","));    		
-    	]]> 
-    	</script>
-		<echo message="layeredModules: ${layeredModules}"/>
-		<echo message="layersFiles: ${layersFiles}"/>
+    		self.getProject().setProperty("uncompressedLayered", uncompressedLayered.join(","));    		
+    	]]>
+		</script>
+		<echo message="layeredModules: ${layeredModules}" />
+		<echo message="uncpompressd modules: ${uncompressedLayered}"/>
+		<echo message="layersFiles: ${layersFiles}" />
 	</target>
-	
-    <!-- =========================================================================== -->
+
+	<!-- =========================================================================== -->
 	<!-- copy the layers 															 -->
-    <!-- =========================================================================== -->
-    <target name="copyLayers">
-    	<echo message="Copying layers..."/>
+	<!-- =========================================================================== -->
+	<target name="copyLayers">
+		<echo message="Copying layers..." />
 		<for list="${layersFiles}" param="file">
-	        <sequential>
-	            <echo message="File: @{file}.js" />
-	            <copy file="${tmpDir}/@{file}.js" toFile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true"/>
-	            <copy file="${tmpDir}/@{file}.js.uncompressed.js" toFile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true"/>
-	        </sequential>
-	    </for>
+			<sequential>
+				<echo message="File: @{file}.js" />
+				<copy file="${tmpDir}/@{file}.js" toFile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true" />
+				<copy file="${tmpDir}/@{file}.js.uncompressed.js" toFile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true" />
+			</sequential>
+		</for>
+
 	</target>
-	
-    <!-- =========================================================================== -->
+
+	<!-- =========================================================================== -->
 	<!-- copy the mobile css themes													 -->
-    <!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	<target name="copyMobileThemes" depends="init">
-		<echo message="Copying mobile themes..."/>
-        <for list="${mobileThemes}" param="file">
-            <sequential>
-                <echo message="File: @{file}" />
-                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false"/>
-                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false"/>
-            </sequential>
-    	</for>
+		<echo message="Copying mobile themes..." />
+		<for list="${mobileThemes}" param="file">
+			<sequential>
+				<echo message="File: @{file}" />
+				<copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false" />
+				<copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false" />
+			</sequential>
+		</for>
 		<!-- compat themes -->
-		<echo message="Copying mobile compat themes..."/>
+		<echo message="Copying mobile compat themes..." />
 		<for list="${mobileCompatThemes}" param="file">
 			<sequential>
-                <echo message="File: @{file}" />
-                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false"/>
-                <copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false"/>
+				<echo message="File: @{file}" />
+				<copy file="${tmpDir}/@{file}" toFile="${targetDir}/compressed/@{file}" failonerror="false" />
+				<copy file="${tmpDir}/@{file}" toFile="${targetDir}/uncompressed/@{file}" failonerror="false" />
 			</sequential>
 		</for>
 		<!-- compat resources -->
-		<echo message="Copying mobile compat resources..."/>
+		<echo message="Copying mobile compat resources..." />
 		<for list="${mobileCompatResDir}" param="dir">
 			<sequential>
-				<echo message="dir=@{dir}"/>
-                <copy todir="${targetDir}/compressed/@{dir}" failonerror="false" verbose="true" overwrite="true" >
-                	<fileset dir="${tmpDir}/@{dir}" includes="**/*"/>
-                </copy>
-                <copy todir="${targetDir}/uncompressed/@{dir}" failonerror="false" verbose="true" overwrite="true" >
-                	<fileset dir="${tmpDir}/@{dir}" includes="**/*"/>
-                </copy>
+				<echo message="dir=@{dir}" />
+				<copy todir="${targetDir}/compressed/@{dir}" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/@{dir}" includes="**/*" />
+				</copy>
+				<copy todir="${targetDir}/uncompressed/@{dir}" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/@{dir}" includes="**/*" />
+				</copy>
 			</sequential>
 		</for>
-		<!-- dijit resources -->
-		<echo message="Copying mobile dijit resources..."/>
+		<!-- dijit and images resources -->
+		<echo message="Copying mobile dijit resources..." />
 		<for list="android,blackberry,iphone" param="os">
 			<sequential>
-    	        <copy todir="${targetDir}/compressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true" >
-	            	<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less"/>
-	            </copy>
-    	        <copy todir="${targetDir}/uncompressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true" >
-	            	<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less"/>
-	            </copy>
-   			</sequential>
+				<copy todir="${targetDir}/compressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less" />
+				</copy>
+				<copy todir="${targetDir}/compressed/dojox/mobile/themes/@{os}/images" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/images" includes="**/*" />
+				</copy>
+				<copy todir="${targetDir}/uncompressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less" />
+				</copy>
+				<copy todir="${targetDir}/uncompressed/dojox/mobile/themes/@{os}/images" failonerror="false" verbose="true" overwrite="true">
+					<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/images" includes="**/*" />
+				</copy>
+			</sequential>
 		</for>
 	</target>
-	
-    <!-- =========================================================================== -->
+
+	<!-- =========================================================================== -->
 	<!-- copy possible nls bundles													 -->
-    <!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	<target name="copyNlsBundles">
-		<echo message="Copying Nls Bundles..."/>
+		<echo message="Copying Nls Bundles..." />
 		<for list="${layersNls}" param="file">
-	        <sequential>
-	        	<!-- copy uncompressed first --> 
-	            <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
-                    <fileset dir="${tmpDir}" includes="@{file}_*.js" />
-                </copy>
-	        	<!-- copy compressed files--> 
-	        	<copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
-                    <fileset dir="${tmpDir}" includes="@{file}_*.js" />
-                </copy>
-	        </sequential>
-	    </for>
-    	<!-- then compressed nls bundles 									-->
-    	<!-- workaround dojo build 1.7.2 bug: does not compress nls bundles	-->
-		<echo message="Compressing Nls bundles..."/>
+			<sequential>
+				<!-- copy uncompressed first -->
+				<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
+					<fileset dir="${tmpDir}" includes="@{file}_*.js" />
+				</copy>
+				<!-- copy compressed files-->
+				<copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
+					<fileset dir="${tmpDir}" includes="@{file}_*.js" />
+				</copy>
+			</sequential>
+		</for>
+		<!-- then compressed nls bundles 									-->
+		<!-- workaround dojo build 1.7.2 bug: does not compress nls bundles	-->
+		<echo message="Compressing Nls bundles..." />
 		<for list="${layersNls}" param="file" keepgoing="true">
-	        <sequential>
-	        	<for param="bundle" keepgoing="true">
-	        		<path>
-	                  	<fileset dir="${targetDir}/compressed" includes="@{file}_*.js" />
-	        		</path>
-	    	        <sequential>
-	    	        	<echo message="bundle:@{bundle}"/>
-	    	        	<basename property="srcname@{bundle}" file="@{bundle}" />
-	    	        	<echo message="srcname:${srcname@{bundle}}"/>
-	    	        	<dirname property="srcBundleDir" file="@{bundle}" />
-						<jscomp compilationLevel="simple" warning="quiet" debug="false" 
-							output="${srcBundleDir}/${srcname@{bundle}}.compressed">
+			<sequential>
+				<for param="bundle" keepgoing="true">
+					<path>
+						<fileset dir="${targetDir}/compressed" includes="@{file}_*.js" />
+					</path>
+					<sequential>
+						<echo message="bundle:@{bundle}" />
+						<basename property="srcname@{bundle}" file="@{bundle}" />
+						<echo message="srcname:${srcname@{bundle}}" />
+						<dirname property="srcBundleDir" file="@{bundle}" />
+						<jscomp compilationLevel="simple" warning="quiet" debug="false" output="${srcBundleDir}/${srcname@{bundle}}.compressed">
 							<sources dir="${srcBundleDir}">
-								<file name="${srcname@{bundle}}"/>
+								<file name="${srcname@{bundle}}" />
 							</sources>
 						</jscomp>
-	    	        	<move file="${srcBundleDir}/${srcname@{bundle}}.compressed" tofile="${srcBundleDir}/${srcname@{bundle}}" overwrite="true" verbose="true"/>
-			        </sequential>
+						<move file="${srcBundleDir}/${srcname@{bundle}}.compressed" tofile="${srcBundleDir}/${srcname@{bundle}}" overwrite="true" verbose="true" />
+					</sequential>
 				</for>
-	        </sequential>
-	    </for>
+			</sequential>
+		</for>
 	</target>
 
-    <!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	<!-- copy the loose modules														 -->
-    <!-- =========================================================================== -->
+	<!-- =========================================================================== -->
 	<target name="copyLooseModules" depends="extractLayersData">
-		<echo message="Copying loose modules..."/>
-        <copy todir="${targetDir}/compressed" overwrite="true" verbose="true">
-            <fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js,**/mobile/**,build-report.txt" includes="**/*" />
-        </copy>
-        <copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true">
-            <fileset dir="${tmpDir}" excludes="${layeredModules},**/mobile/**,build-report.txt" includes="**/*.uncompressed.js,**/*" />
-        	<mapper type="regexp" from="(.*).uncompressed.js" to="\1"/>
-        </copy>
+		<echo message="Copying loose modules..." />
+		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" excludes="${layeredModules},**/mobile/**,build-report.txt" includes="**/*.uncompressed.js" />
+			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
+		</copy>
+		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" includes="**/nls/**" />
+		</copy>
+		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" excludes="**/*.js,**/mobile/**,build-report.txt" />
+		</copy>
+		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js,**/mobile/**,build-report.txt" includes="**/*" />
+		</copy>
 	</target>
-	
-    <!-- =========================================================================== -->
-    <!-- Targets: buildLayers		                                                 -->                        
-    <!-- =========================================================================== -->
-    <target name="buildLayers" depends="buildDojo, cleanTarget">
-        
-    	<echo message="Copying resources to target dir: ${targetDir}" />
-    	
-    	<antcall> 
-	    	<!-- Process layers data from build report -->
-    		<target name="extractLayersData"/>
-    	
-    		<!-- copy layers -->
-    		<target name="copyLayers" />
-    	
-    		<!-- copy mobile css -->
-    		<target name="copyMobileThemes" />
 
-    		<!-- copy loose modules file -->
-    		<target name="copyLooseModules"/>
-    	
-    		<!-- copy nls bundles file -->
-    		<target name="copyNlsBundles"/>
-    	</antcall>
-    	
-    	<!-- copy build report file -->
-        <echo message="Copy build report to ${targetDir}" />
-        <copy file="${tmpDir}/build-report.txt" todir="${targetDir}/" />
+	<!-- =========================================================================== -->
+	<!-- Targets: buildLayers		                                                 -->
+	<!-- =========================================================================== -->
+	<target name="buildLayers" depends="buildDojo, cleanTarget">
 
-    	<!-- copy build profiles file -->
-        <echo message="Copy build profiles to ${targetDir}" />
-        <copy file="${profilesDir}/${profileFile}.js" todir="${targetDir}/" />
-        <copy file="${profilesDir}/env-config.js" todir="${targetDir}/" />
+		<echo message="Copying resources to target dir: ${targetDir}" />
 
-    	<!-- zip the result -->
-    	<zip destfile="${targetDir}/${profileFile}.zip"
-    		basedir="${targetDir}">
-    	</zip>
-    	
-    	
-    </target>
-    
-	
-    <!-- =========================================================================== -->
-    <!-- Targets: cleanTmp, cleanTarget, cleanSrc                                    -->                        
-    <!-- =========================================================================== -->
-    <target name="cleanTmp" depends="init">
-        <echo message="Clearing tmp directory: ${tmpDir}" />
-        <delete includeemptydirs="true">
-            <fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
-        </delete>
-    </target>
+		<antcall>
+			<!-- Process layers data from build report -->
+			<target name="extractLayersData" />
+
+			<!-- copy layers -->
+			<target name="copyLayers" />
+
+			<!-- copy mobile css -->
+			<target name="copyMobileThemes" />
+
+			<!-- copy loose modules file -->
+			<target name="copyLooseModules" />
+
+			<!-- copy nls bundles file -->
+			<target name="copyNlsBundles" />
+		</antcall>
+
+		<!-- copy build report file -->
+		<echo message="Copy build report to ${targetDir}" />
+		<copy file="${tmpDir}/build-report.txt" todir="${targetDir}/" />
+
+		<!-- copy build profiles file -->
+		<echo message="Copy build profiles to ${targetDir}" />
+		<copy file="${profilesDir}/${profileFile}.js" todir="${targetDir}/" />
+		<copy file="${profilesDir}/env-config.js" todir="${targetDir}/" />
+
+		<!-- zip the result -->
+		<zip destfile="${targetDir}/${profileFile}.zip" basedir="${targetDir}">
+		</zip>
+
+
+	</target>
+
+
+	<!-- =========================================================================== -->
+	<!-- Targets: cleanTmp, cleanTarget, cleanSrc                                    -->
+	<!-- =========================================================================== -->
+	<target name="cleanTmp" depends="init">
+		<echo message="Clearing tmp directory: ${tmpDir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
+		</delete>
+	</target>
 
 	<target name="cleanSrc" depends="init">
-        <echo message="Clearing src directory: ${srcDir}" />
+		<echo message="Clearing src directory: ${srcDir}" />
 		<delete includeemptydirs="true">
-		    <fileset dir="${srcDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore"/>
+			<fileset dir="${srcDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
 		</delete>
-    </target>
-	
-    <target name="cleanTarget" depends="init">
-        <echo message="Clearing target directory: ${targetDir}" />
-        <delete includeemptydirs="true">
-            <fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
-        </delete>
-    </target>
-    
-    <!-- =========================================================================== -->
-    <!-- Targets: all                                                                -->                        
-    <!-- =========================================================================== -->
-    <target name="all" depends="buildLayers,cleanTmp" />
-    
+	</target>
+
+	<target name="cleanTarget" depends="init">
+		<echo message="Clearing target directory: ${targetDir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
+		</delete>
+	</target>
+
+	<!-- =========================================================================== -->
+	<!-- Targets: all                                                                -->
+	<!-- =========================================================================== -->
+	<target name="all" depends="buildLayers,cleanTmp" />
+
 </project>
