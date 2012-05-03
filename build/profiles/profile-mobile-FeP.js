@@ -7,11 +7,11 @@ var profile = (function(){
 	        // This causes normally private loader data to be exposed for debugging, so we don’t need that either
 	        'dojo-publish-privates':0,
 	        // We aren’t loading tests in production
-	        'dojo-test-sniff':0,
+	        'dojo-test-sniff':0
 	        // no sync loader
-			'dojo-sync-loader':0,
-			'dojo-v1x-i18n-Api':0, // see http://bugs.dojotoolkit.org/ticket/14831
-			'dojo-xhr-factory':0 // see http://bugs.dojotoolkit.org/ticket/14831
+			//'dojo-sync-loader':0,
+			//'dojo-v1x-i18n-Api':0, // see http://bugs.dojotoolkit.org/ticket/14831
+			//'dojo-xhr-factory':0 // see http://bugs.dojotoolkit.org/ticket/14831
 	    },
 
 		layers: {
@@ -87,7 +87,23 @@ var profile = (function(){
 			"dojo/dijit-layer":{
 				include: use("dijit"),
 				exclude:[
-					"dojo/core-web-layer"
+				    "dojo/data/util/filter",
+				    "dojo/data/util/sorter",
+					"dojo/core-web-layer",
+					"dojo/dijit-layer",
+					"dojo/dnd/autoscroll",
+					"dojo/dnd/Avatar",
+					"dojo/dnd/common",
+					"dojo/dnd/Manager",
+					"dojo/dnd/move",
+					"dojo/dnd/Moveable",
+					"dojo/dnd/Mover",
+					"dojo/dnd/TimedMoveable",
+					"dojo/html",
+					"dojo/nls/colors",
+					"dojo/store/Memory",
+					"dojo/store/util/QueryResults",
+					"dojo/store/util/SimpleQueryEngine"
 				]
 			}
 		}
