@@ -9,7 +9,9 @@ var profile = (function(){
 	        // We aren’t loading tests in production
 	        'dojo-test-sniff':0,
 	        // no sync loader
-			'dojo-sync-loader':0
+			'dojo-sync-loader':0,
+			'dojo-v1x-i18n-Api':0, // see http://bugs.dojotoolkit.org/ticket/14831
+			'dojo-xhr-factory':0 // see http://bugs.dojotoolkit.org/ticket/14831
 	    },
 
 		layers: {
@@ -17,7 +19,9 @@ var profile = (function(){
 				customBase: true,
 				boot: true,
 				include: [
-					"dojo/dojo"
+					"dojo/dojo",
+					// http://bugs.dojotoolkit.org/ticket/14947
+					"dojo/i18n"
 				]
 		    },
 		    

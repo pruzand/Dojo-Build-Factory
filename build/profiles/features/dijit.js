@@ -112,20 +112,6 @@ dijit = [
 	"dijit/tree/ForestStoreModel",
 	"dijit/tree/TreeStoreModel",
 	"dijit/typematic",
-	"dijit/WidgetSet",
-	"dojo/data/util/filter",
-	"dojo/data/util/sorter",
-	"dojo/dijit-layer",
-	"dojo/dnd/autoscroll",
-	"dojo/dnd/common",
-	"dojo/dnd/move",
-	"dojo/dnd/Moveable",
-	"dojo/dnd/Mover",
-	"dojo/dnd/TimedMoveable",
-	"dojo/html",
-	"dojo/number",
-	"dojo/store/Memory",
-	"dojo/store/util/QueryResults",
-	"dojo/store/util/SimpleQueryEngine"
+	"dijit/WidgetSet"
 
 ];

@@ -16,6 +16,8 @@ var profile = {
 	"localeList"			  : null,
 	"webkitMobile"			  : true,
 	
+	"preloadLocalizations"	  : 0,
+	
 	// now a typical loader packages configuration
 	packages:[
 		{ name:"dojo"		 , location:"./src/dojo"		},
