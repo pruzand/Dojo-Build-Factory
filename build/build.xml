@@ -7,7 +7,10 @@
 		<property name="mobileThemes" value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
 		<property name="mobileCompatThemes" value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
 		<property name="mobileCompatResDir" value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
-
+		
+		<!-- Comment or remove (value has no effect) this property to not concat bundles with their layer -->
+		<property name="concatBundleInLayer" value="true"/>
+		
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
 				<pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
@@ -69,7 +72,7 @@ __layersFeatures = {};
 		<if>
 			<isset property="localeListParam" />
 			<then>
-				<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
+				<property name="buildArgs" value=" -Dfile.encoding=UTF8 -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
 			</then>
 			<else>
 				<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo " />
@@ -234,6 +237,35 @@ __layersFeatures = {};
 		</for>
 	</target>
 
+	
+	<!-- =========================================================================== -->
+	<!-- Concat nls bundles in their corresponding layer							 -->
+	<!-- =========================================================================== -->
+	<target name="concatNlsInLayer" depends="init,extractLayersData" if="concatBundleInLayer">
+		<echo message="Concatenating nls and layers"/>
+		<for list="${layersFiles}" param="file">
+			<sequential>
+				<basename property="filename@{file}" file="@{file}" />
+				<propertyregex property="layerDir" input="@{file}" regexp="([^\/]*)[A-Aa-z_-]*" select="\1"></propertyregex>
+				<concat destfile="${targetDir}/compressed/@{file}.concat" outputencoding="UTF-8" force="true">
+					<sort> 
+						<fileset dir="${targetDir}/compressed" includes="${layerDir}/nls/${filename@{file}}_*.js, @{file}.js" />
+						<reverse  xmlns="antlib:org.apache.tools.ant.types.resources.comparators" />
+					</sort>
+				</concat>
+				<move file="${targetDir}/compressed/@{file}.concat" tofile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true"/>
+				<concat destfile="${targetDir}/uncompressed/@{file}.concat" outputencoding="UTF-8" force="true">
+					<sort> 
+						<fileset dir="${targetDir}/uncompressed" includes="${layerDir}/nls/${filename@{file}}_*.js, @{file}.js" />
+						<reverse  xmlns="antlib:org.apache.tools.ant.types.resources.comparators"/>
+					</sort>
+				</concat>
+				<move file="${targetDir}/uncompressed/@{file}.concat" tofile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true"/>
+			</sequential>
+		</for>
+		
+	</target>
+	
 	<!-- =========================================================================== -->
 	<!-- copy the loose modules														 -->
 	<!-- =========================================================================== -->
@@ -249,8 +281,14 @@ __layersFeatures = {};
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="**/*.js,**/mobile/**,build-report.txt" />
 		</copy>
+		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/mobile/*.js" />
+		</copy>
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js,**/mobile/**,build-report.txt" includes="**/*" />
+		</copy>
+		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
+			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/mobile/*.js" />
 		</copy>
 	</target>
 
@@ -276,6 +314,9 @@ __layersFeatures = {};
 
 			<!-- copy nls bundles file -->
 			<target name="copyNlsBundles" />
+			
+			<!-- concat layers with their bundles -->
+			<target name="concatNlsInLayer" />
 		</antcall>
 
 		<!-- copy build report file -->
