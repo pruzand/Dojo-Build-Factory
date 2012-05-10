@@ -3,12 +3,12 @@
 
 	<target name="init">
 
-		<property name="finalDirs" value="dojo/cldr/nls/en,dojo/nls" />
+		<!-- Mobile resources -->
 		<property name="mobileThemes" value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
 		<property name="mobileCompatThemes" value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
 		<property name="mobileCompatResDir" value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
 		
-		<!-- Comment or remove (value has no effect) this property to not concat bundles with their layer -->
+		<!-- Comment or remove (value has no effect) this property to *not* concat bundles with their layer -->
 		<property name="concatBundleInLayer" value="true"/>
 		
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
@@ -16,24 +16,29 @@
 				<pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar" />
 			</classpath>
 		</taskdef>
+		<!-- Dojo distrib directory -->
 		<property name="srcDir" value="${basedir}/src" />
+		<!-- Destination directory -->
 		<property name="targetDir" value="${basedir}/result" />
+		<!-- Library directory (for antlib and compiler.jar) -->
 		<property name="libDir" value="${basedir}/lib" />
+		<!-- The dojo build system output directory -->
 		<property name="tmpDir" value="${basedir}/tmp" />
+		<!-- The profiles directory -->
 		<property name="profilesDir" value="${basedir}/profiles" />
-		<property name="srcCfgDir" value="${basedir}/srcconfig" />
+		<!-- The features directory -->
 		<property name="featuresDir" value="${profilesDir}/features" />
+		<!-- The file that group all features definitions. Created at build time and passed to the dojo build -->
 		<property name="featuresDefFilename" value="featuresdef.js" />
-
+		<!-- The path/filename for the google closure compiler -->
 		<property name="jscompjar" location="${libDir}/compiler.jar" />
-
+		<!-- The google closure compiler task -->
 		<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="${jscompjar}" />
 
 
 		<echo message="Ant Version     : ${ant.version}" />
 		<echo message="Base Dir        : ${basedir}" />
 		<echo message="Source Dir      : ${srcDir}" />
-		<echo message="Src Config Dir  : ${srcCfgDir}" />
 		<echo message="Tmp Dir         : ${tmpDir}" />
 		<echo message="Target Dir      : ${targetDir}" />
 
@@ -41,7 +46,7 @@
 
 
 	<!-- =========================================================================== -->
-	<!-- Concat features definitions into a the global __layersFeatures				 -->
+	<!-- Concat features definitions into the global __layersFeatures				 -->
 	<!-- =========================================================================== -->
 	<target name="concatFeaturesDef" depends="init">
 		<delete file="${profilesDir}/featuresdef.js" />
@@ -75,7 +80,7 @@ __layersFeatures = {};
 				<property name="buildArgs" value=" -Dfile.encoding=UTF8 -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo --localeList ${localeListParam}" />
 			</then>
 			<else>
-				<property name="buildArgs" value=" -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo " />
+				<property name="buildArgs" value=" -Dfile.encoding=UTF8 -Xms256m -Xmx256m -cp ../shrinksafe/js.jar${path.separator}../shrinksafe/shrinksafe.jar${path.separator}${libDir}/compiler.jar org.mozilla.javascript.tools.shell.Main ../../dojo/dojo.js load=build --require ../../../profiles/${featuresDefFilename} --profile ../../../profiles/${profileFile}.js --profile ../../../profiles/env-config.js baseUrl=../../dojo"/>
 			</else>
 		</if>
 		<echo message="Running Dojo build with arg: ${buildArgs}" />

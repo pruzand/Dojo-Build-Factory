@@ -15,6 +15,9 @@ var profile = {
 	"mini"					  : true,
 	"webkitMobile"			  : true,
 	
+	"localeList"			  : null,
+	//"preloadLocalizations": 0,
+	
 	packages:[
 		{ name:"dojo"		 , location:"./src/dojo"		},
 		{ name:"dojox"		 , location:"./src/dojox"		},
