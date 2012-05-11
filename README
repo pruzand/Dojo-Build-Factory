@@ -1,1 +1,34 @@
+The goal of this project is to simplify getting started with Dojo, by greatly decreasing the number of files 
+and concepts needed to become productive. Gone are the days of sorting through 20,000 files and their dependencies 
+that might be needed to use Dojo.
+
+* pre-defined, built/optimized layers for common sub packages of Dojo (a more logical mapping than the current 
+  fragmented projects. All Javascript files included in the pre optimized layers are removed from the build output, 
+  greatly reducing the overall number of JavaScript files needed to get started.
+* pre-packaged themes (css files & associated resources) for mobile and desktop which have individual .css files 
+  rolled up into aggregate CSS layer that's easy to include in HTML pages.
+* pre-packaged localization bundles (multiple bundles, one per language, per major sub package of dojo)
+
+The plan is to have prebuilt packages for the following dojo area:
+
+AMD Loader (minimal, 4k)
+Full Core
+Common UI F/W
+Desktop UI (dijit)
+Desktop Theme: Claro (claro)(cross-platform)(optimized)
+Mobile UI (dojox/mobile)
+Mobile Theme: iOS (iPad/iPhone)(optimized)
+Mobile Theme: Android (2.1-3.x)(optimized)
+Mobile Theme: Blackberry (OS6)(optimized)
+Mobile Theme: Mobile One UI (future)(cross-platform)(optimized)
+Vector Graphics API (dojox/gfx)
+Business Charting (dojox/charting and it's dependencies, with a single default nice looking theme)
+Grid (gridx)
+Gauges (dgauge)
+Calendar (dojox/calendar)
+Treemap (dojox/treemap)
+Language packs
+
+License:
+
 The Dojo Build Factory project is published under the terms of the Dojo License.
