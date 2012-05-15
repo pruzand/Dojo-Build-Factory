@@ -1,12 +1,12 @@
 var profile = (function(){
 	return {
 		staticHasFeatures: {
-	        // The trace & log APIs are used for debugging the loader, so we don’t need them in the build
+	        // The trace & log APIs are used for debugging the loader, so we donï¿½t need them in the build
 	        'dojo-trace-api':0,
 	        'dojo-log-api':0,
-	        // This causes normally private loader data to be exposed for debugging, so we don’t need that either
+	        // This causes normally private loader data to be exposed for debugging, so we donï¿½t need that either
 	        'dojo-publish-privates':0,
-	        // We aren’t loading tests in production
+	        // We arenï¿½t loading tests in production
 	        'dojo-test-sniff':0
 	        // no sync loader
 			//'dojo-sync-loader':0,
@@ -22,6 +22,23 @@ var profile = (function(){
 					"dojo/dojo",
 					// http://bugs.dojotoolkit.org/ticket/14947
 					"dojo/i18n"
+				],
+				exclude: [
+			      	"dojo/_base/json",
+			    	"dojo/on",
+			    	"dojo/json",
+			    	"dojo/has",
+			    	"dojo/dom-form",
+			    	"dojo/_base/sniff",
+			    	"dojo/_base/xhr",
+			    	"dojo/io-query",
+			    	"dojo/_base/Deferred",
+			    	"dojo/_base/window",
+			    	"dojo/dom",
+			    	"dojo/_base/kernel",
+			    	"dojo/_base/lang",
+			    	"dojo/_base/array",
+			    	"dojo/_base/config"
 				]
 		    },
 		    
@@ -90,7 +107,6 @@ var profile = (function(){
 				    "dojo/data/util/filter",
 				    "dojo/data/util/sorter",
 					"dojo/core-web-layer",
-					"dojo/dijit-layer",
 					"dojo/dnd/autoscroll",
 					"dojo/dnd/Avatar",
 					"dojo/dnd/common",
