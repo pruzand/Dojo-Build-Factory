@@ -197,6 +197,18 @@ __layersFeatures = {};
 				</copy>
 			</sequential>
 		</for>
+		<copy todir="${targetDir}/uncompressed/dojox/mobile/themes/common/dijit" failonerror="false" verbose="true" overwrite="true">
+			<fileset dir="${tmpDir}/dojox/mobile/themes/common/dijit" includes="**/*.css" />
+		</copy>
+		<copy todir="${targetDir}/uncompressed/dojox/mobile/themes/common/compat" failonerror="false" verbose="true" overwrite="true">
+			<fileset dir="${tmpDir}/dojox/mobile/themes/common/compat" includes="**/*" />
+		</copy>
+		<copy todir="${targetDir}/compressed/dojox/mobile/themes/common/dijit" failonerror="false" verbose="true" overwrite="true">
+			<fileset dir="${tmpDir}/dojox/mobile/themes/common/dijit" includes="**/*.css" />
+		</copy>
+		<copy todir="${targetDir}/compressed/dojox/mobile/themes/common/compat" failonerror="false" verbose="true" overwrite="true">
+			<fileset dir="${tmpDir}/dojox/mobile/themes/common/compat" includes="**/*" />
+		</copy>
 	</target>
 
 	<!-- =========================================================================== -->
@@ -296,6 +308,17 @@ __layersFeatures = {};
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/mobile/*.js" />
 		</copy>
+		<!-- special case for mobile-ready dijits -->
+		<copy todir="${targetDir}/compressed/dijit/" file="${tmpDir}/dijit/ColorPalette.js" />
+		<copy todir="${targetDir}/compressed/dijit/" file="${tmpDir}/dijit/_PaletteMixin.js" />
+		<copy todir="${targetDir}/compressed/dijit/" file="${tmpDir}/dijit/Calendar.js" />
+		<copy todir="${targetDir}/compressed/dijit/" file="${tmpDir}/dijit/CalendarLite.js" />
+		<copy todir="${targetDir}/compressed/dijit/" file="${tmpDir}/dijit/typematic.js" />		
+		<copy file="${tmpDir}/dijit/ColorPalette.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/ColorPalette.js" />
+		<copy file="${tmpDir}/dijit/_PaletteMixin.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/_PaletteMixin.js" />
+		<copy file="${tmpDir}/dijit/typematic.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/typematic.js" />
+		<copy file="${tmpDir}/dijit/Calendar.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/Calendar.js" />
+		<copy file="${tmpDir}/dijit/CalendarLite.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/CalendarLite.js" />
 	</target>
 
 	<!-- =========================================================================== -->
