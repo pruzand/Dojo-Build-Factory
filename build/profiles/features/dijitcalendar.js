@@ -1,0 +1,3 @@
+dijitcalendar = [
+	"dijit/Calendar"
+];

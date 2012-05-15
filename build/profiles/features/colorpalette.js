@@ -1,0 +1,3 @@
+colorpalette = [
+	"dijit/ColorPalette"
+];
