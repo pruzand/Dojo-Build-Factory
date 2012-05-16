@@ -303,7 +303,7 @@ __layersFeatures = {};
 			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
 		</copy>
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt" includes="**/*" />
+			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt" includes="**/*" />
 		</copy>
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/mobile/*.js" />
