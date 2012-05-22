@@ -114,7 +114,7 @@ __layersFeatures = {};
     		DojoBuildFactory.setProperty("layersFiles", layers);	
     		self.getProject().setProperty("layersNames", names);	
     		self.getProject().setProperty("layersNls", nlsPaths);
-    		regexp = new RegExp("[-A-Za-z_/0-9]*[^:\r\n\t]","g");
+    		regexp = new RegExp("[-A-Za-z_/0-9]*[^.:\r\n\t]","g");
     		var modules = rep.match(regexp);
     		var uncompressedLayered = [];
 			for (i=0;i<modules.length;++i){
@@ -288,20 +288,22 @@ __layersFeatures = {};
 	<!-- =========================================================================== -->
 	<target name="copyLooseModules" depends="extractLayersData">
 		<echo message="Copying loose modules..." />
+		<!-- uncompressed -->
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/mobile/**,build-report.txt" includes="**/*.uncompressed.js" />
 			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" includes="**/nls/**" />
+			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/nls/**" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,**/mobile/**,build-report.txt" />
+			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/mobile/*.uncompressed.js" />
 			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
 		</copy>
+		<!-- compressed -->
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt" includes="**/*" />
 		</copy>
