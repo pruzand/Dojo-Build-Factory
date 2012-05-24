@@ -24,7 +24,7 @@ Mobile Theme: Mobile One UI (future)(cross-platform)(optimized)
 Vector Graphics API (dojox/gfx)
 Business Charting (dojox/charting and it's dependencies, with a single default nice looking theme)
 Grid (gridx)
-Gauges (dgauge)
+Gauges (dgauges)
 Calendar (dojox/calendar)
 Treemap (dojox/treemap)
 Language packs
