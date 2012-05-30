@@ -110,6 +110,7 @@ dijit = [
 	"dijit/tree/dndSource",
 	"dijit/tree/model",
 	"dijit/tree/ForestStoreModel",
+	"dijit/tree/ObjectStoreModel",
 	"dijit/tree/TreeStoreModel",
 	"dijit/typematic",
 	"dijit/WidgetSet"
