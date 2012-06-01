@@ -22,23 +22,6 @@ var profile = (function(){
 					"dojo/dojo",
 					// http://bugs.dojotoolkit.org/ticket/14947
 					"dojo/i18n"
-				],
-				exclude: [
-			      	"dojo/_base/json",
-			    	"dojo/on",
-			    	"dojo/json",
-			    	"dojo/has",
-			    	"dojo/dom-form",
-			    	"dojo/_base/sniff",
-			    	"dojo/_base/xhr",
-			    	"dojo/io-query",
-			    	"dojo/_base/Deferred",
-			    	"dojo/_base/window",
-			    	"dojo/dom",
-			    	"dojo/_base/kernel",
-			    	"dojo/_base/lang",
-			    	"dojo/_base/array",
-			    	"dojo/_base/config"
 				]
 		    },
 		    
