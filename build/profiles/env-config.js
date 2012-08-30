@@ -14,9 +14,10 @@ var profile = {
 	"cssOptimize"			  : "comments.keepLines",
 	"mini"					  : true,
 	"webkitMobile"			  : true,
-	
-	"localeList"			  : null,
-	//"preloadLocalizations": 0,
+	// specificy a list of locale to generate flattened nls bundle, or set
+	// it to null to rely on new 1.7 behavior
+	"localeList"			  : "en-us,fr-fr",
+	"insertAbsMids"			  : false,
 	
 	packages:[
 		{ name:"dojo"		 , location:"./src/dojo"		},

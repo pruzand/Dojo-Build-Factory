@@ -228,8 +228,10 @@ __layersFeatures = {};
 				</copy>
 			</sequential>
 		</for>
+		
 		<!-- then compressed nls bundles 									-->
 		<!-- workaround dojo build 1.7.2 bug: does not compress nls bundles	-->
+		<!-- NOT NEEDED ANYMORE, FIXED IN 1.8 
 		<echo message="Compressing Nls bundles..." />
 		<for list="${layersNls}" param="file" keepgoing="true">
 			<sequential>
@@ -252,6 +254,7 @@ __layersFeatures = {};
 				</for>
 			</sequential>
 		</for>
+		-->
 	</target>
 
 	
@@ -347,7 +350,7 @@ __layersFeatures = {};
 			<target name="copyNlsBundles" />
 			
 			<!-- concat layers with their bundles -->
-			<target name="concatNlsInLayer" />
+			<!-- <target name="concatNlsInLayer" /> -->
 		</antcall>
 
 		<!-- copy build report file -->
