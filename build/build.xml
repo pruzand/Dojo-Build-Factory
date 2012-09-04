@@ -90,7 +90,7 @@ __layersFeatures = {};
 	</target>
 
 	<!-- =========================================================================== -->
-	<!-- extract layers names from build-report.txt 								 -->
+	<!-- extract layers data from build-report.txt 								 -->
 	<!-- =========================================================================== -->
 	<target name="extractLayersData" depends="init">
 		<echo message="Processing build-report to extract layers data..." />
@@ -122,7 +122,10 @@ __layersFeatures = {};
     			modules[i] = modules[i]+".*";
     		}
     		self.getProject().setProperty("layeredModules", modules.join(","));    		
-    		self.getProject().setProperty("uncompressedLayered", uncompressedLayered.join(","));    		
+    		self.getProject().setProperty("uncompressedLayered", uncompressedLayered.join(","));
+			regexp = new RegExp("[^.]*/templates/[^.]*\.html","g");
+			var templates = rep.match(regexp);
+    		self.getProject().setProperty("layeredTemplates", templates.join(","));    		
     	]]>
 		</script>
 		<echo message="layeredModules: ${layeredModules}" />
@@ -300,7 +303,7 @@ __layersFeatures = {};
 			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/nls/**" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt" />
+			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt,${layeredTemplates}" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/mobile/*.uncompressed.js" />
@@ -308,7 +311,7 @@ __layersFeatures = {};
 		</copy>
 		<!-- compressed -->
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt" includes="**/*" />
+			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt,${layeredTemplates}" includes="**/*" />
 		</copy>
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/mobile/*.js" />
@@ -350,7 +353,8 @@ __layersFeatures = {};
 			<target name="copyNlsBundles" />
 			
 			<!-- concat layers with their bundles -->
-			<!-- <target name="concatNlsInLayer" /> -->
+			<!-- Not needed and  not possible anymore. -->
+			<!-- <target name="concatNlsInLayer" /> --> 
 		</antcall>
 
 		<!-- copy build report file -->
