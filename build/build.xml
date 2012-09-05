@@ -231,33 +231,6 @@ __layersFeatures = {};
 				</copy>
 			</sequential>
 		</for>
-		
-		<!-- then compressed nls bundles 									-->
-		<!-- workaround dojo build 1.7.2 bug: does not compress nls bundles	-->
-		<!-- NOT NEEDED ANYMORE, FIXED IN 1.8 
-		<echo message="Compressing Nls bundles..." />
-		<for list="${layersNls}" param="file" keepgoing="true">
-			<sequential>
-				<for param="bundle" keepgoing="true">
-					<path>
-						<fileset dir="${targetDir}/compressed" includes="@{file}_*.js" />
-					</path>
-					<sequential>
-						<echo message="bundle:@{bundle}" />
-						<basename property="srcname@{bundle}" file="@{bundle}" />
-						<echo message="srcname:${srcname@{bundle}}" />
-						<dirname property="srcBundleDir" file="@{bundle}" />
-						<jscomp compilationLevel="simple" warning="quiet" debug="false" output="${srcBundleDir}/${srcname@{bundle}}.compressed">
-							<sources dir="${srcBundleDir}">
-								<file name="${srcname@{bundle}}" />
-							</sources>
-						</jscomp>
-						<move file="${srcBundleDir}/${srcname@{bundle}}.compressed" tofile="${srcBundleDir}/${srcname@{bundle}}" overwrite="true" verbose="true" />
-					</sequential>
-				</for>
-			</sequential>
-		</for>
-		-->
 	</target>
 
 	
@@ -353,7 +326,7 @@ __layersFeatures = {};
 			<target name="copyNlsBundles" />
 			
 			<!-- concat layers with their bundles -->
-			<!-- Not needed and  not possible anymore. -->
+			<!-- NOT NEEDED AND NOT POSSIBLE ANYMORE... -->
 			<!-- <target name="concatNlsInLayer" /> --> 
 		</antcall>
 

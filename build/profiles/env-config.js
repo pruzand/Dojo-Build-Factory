@@ -17,7 +17,12 @@ var profile = {
 	// specificy a list of locale to generate flattened nls bundle, or set
 	// it to null to rely on new 1.7 behavior
 	"localeList"			  : "en-us,fr-fr",
-	"insertAbsMids"			  : false,
+	
+	// comment out these options if you load the layers with <script> tag (and you should not!)
+	// instead of require(..) them.
+	//"insertAbsMids"			  : true,
+	//"compat" : 1.6,
+	//"noref" : true,
 	
 	packages:[
 		{ name:"dojo"		 , location:"./src/dojo"		},
