@@ -8,7 +8,7 @@ var profile = (function(){
 	        'dojo-log-api':0,
 	        // This causes normally private loader data to be exposed for debugging, so we don�t need that either
 	        'dojo-publish-privates':0,
-	        // no sync loader
+	        // no sync loader. Enable if legacy api support like dojo.require() is needed. 
 			'dojo-sync-loader':0,
 			// needed by flattened nls bundle support
 	        'dojo-v1x-i18n-Api':1,
