@@ -16,7 +16,7 @@ var profile = {
 	"webkitMobile"			  : true,
 	// specificy a list of locale to generate flattened nls bundle, or set
 	// it to null to rely on new 1.7 behavior
-	"localeList"			  : "en-us,fr-fr",
+	"localeList"			  : "en-us",
 	
 	// comment out these options if you load the layers with <script> tag (and you should not!)
 	// instead of require(..) them.
