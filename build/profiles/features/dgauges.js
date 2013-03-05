@@ -23,5 +23,5 @@ dgauges = [
 	"dojox/dgauges/components/default/HorizontalLinearGauge",
 	"dojox/dgauges/components/default/SemiCircularLinearGauge",
 	"dojox/dgauges/components/default/VerticalLinearGauge",
-	"dojox/widget/_Invalidating",
+	"dojox/widget/_Invalidating"
 ];

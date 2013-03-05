@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="DojoBuildFactory" default="all" basedir=".">
+<project name="DojoBuildFactory" default="buildLayers" basedir=".">
 
 	<target name="init">
 
@@ -269,18 +269,11 @@ __layersFeatures = {};
 		<echo message="Copying loose modules..." />
 		<!-- uncompressed -->
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules},**/mobile/**,build-report.txt" includes="**/*.uncompressed.js" />
+			<fileset dir="${tmpDir}" excludes="${layeredModules},build-report.txt" includes="**/*.uncompressed.js" />
 			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
-		</copy>
-		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/nls/**" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt,${layeredTemplates}" />
-		</copy>
-		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules}" includes="**/mobile/*.uncompressed.js" />
-			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
 		</copy>
 		<!-- compressed -->
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
@@ -302,6 +295,22 @@ __layersFeatures = {};
 		<copy file="${tmpDir}/dijit/CalendarLite.js.uncompressed.js" tofile="${targetDir}/uncompressed/dijit/CalendarLite.js" />
 	</target>
 
+    <target name="zipResult">
+        <if>
+            <isset property="zipFilename" />
+            <then>
+                <property name="outputFileName" value="${zipFilename}" />
+            </then>
+            <else>
+                <property name="outputFileName" value="${profileFile}" />
+            </else>
+        </if>
+        <zip destfile="${targetDir}/${outputFileName}-uncompressed.zip" basedir="${targetDir}/compressed">
+        </zip>
+        <zip destfile="${targetDir}/${outputFileName}-compressed.zip" basedir="${targetDir}/uncompressed">
+        </zip>
+
+    </target>
 	<!-- =========================================================================== -->
 	<!-- Targets: buildLayers		                                                 -->
 	<!-- =========================================================================== -->
@@ -340,8 +349,9 @@ __layersFeatures = {};
 		<copy file="${profilesDir}/env-config.js" todir="${targetDir}/" />
 
 		<!-- zip the result -->
-		<zip destfile="${targetDir}/${profileFile}.zip" basedir="${targetDir}">
-		</zip>
+		<antcall>
+            <target name="zipResult" />
+		</antcall>
 
 
 	</target>
@@ -352,21 +362,21 @@ __layersFeatures = {};
 	<!-- =========================================================================== -->
 	<target name="cleanTmp" depends="init">
 		<echo message="Clearing tmp directory: ${tmpDir}" />
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${tmpDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
 		</delete>
 	</target>
 
 	<target name="cleanSrc" depends="init">
 		<echo message="Clearing src directory: ${srcDir}" />
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${srcDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
 		</delete>
 	</target>
 
 	<target name="cleanTarget" depends="init">
 		<echo message="Clearing target directory: ${targetDir}" />
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${targetDir}" includes="**/*" excludes="**/.jazzignore,**/.gitignore" />
 		</delete>
 	</target>
