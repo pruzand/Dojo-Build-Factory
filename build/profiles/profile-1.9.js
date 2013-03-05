@@ -21,7 +21,7 @@ var profile = (function(){
 			// We aren�t loading tests in production
 			'dojo-test-sniff':0,
 			// Don't add replacement console
-			'dojo-guarantee-console': 0,
+			'dojo-guarantee-console': 0
 
 			// Disables some diagnostic information ?
 			// 'dojo-debug-messages': 0,
@@ -43,10 +43,21 @@ var profile = (function(){
 			"dojo/mobile-ui-layer":{
 				include: use("mobile"),
 				exclude: [
-				    "dojo/core-web-layer"
+				    "dojo/core-web-layer",
+				    "dojo/mobile-bidi-layer"
 				]
 			},
-			
+
+			"dojo/mobile-bidi-layer":{
+				include: use("mobile_bidi"),
+				exclude: [
+					"dojo/core-web-layer",
+					"dojox/mobile/ListItem",
+					"dojox/mobile/RoundRectList",
+					"dojo/mobile-ui-layer"
+				]
+			},
+
 			"dojo/mobile-compat-layer":{
 				include: use("mobile_compat"),
 				exclude: [
@@ -65,16 +76,27 @@ var profile = (function(){
 				    "dojo/core-web-layer"
 				]
 			},
-			
+
 			"dojo/charting-layer": {
 				include: use("charting"),
 				exclude: [
 					"dojo/core-web-layer",
 					"dojo/mobile-ui-layer",
-					"dojo/graphics-layer"
+					"dojo/graphics-layer",
+					"dojo/charting-bidi-layer"
 				]
 			},
-			
+
+			"dojo/charting-bidi-layer": {
+				include: use("charting_bidi"),
+				exclude: [
+					"dojo/core-web-layer",
+					"dojo/mobile-ui-layer",
+					"dojo/graphics-layer",
+					"dojo/charting-layer"
+				]
+			},
+
 			"dojo/calendar-layer": {
 				include: use("calendar"),
 				exclude:[
