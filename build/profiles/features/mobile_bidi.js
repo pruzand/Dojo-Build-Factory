@@ -1,5 +1,5 @@
 mobile_bidi = [
-	"dojox/mobile/bidi/_DataListMixin",
+	"dojox/mobile/bidi/_ComboBoxMenu",
 	"dojox/mobile/bidi/_ItemBase",
 	"dojox/mobile/bidi/_StoreListMixin",
 	"dojox/mobile/bidi/Accordion",
@@ -18,6 +18,7 @@ mobile_bidi = [
 	"dojox/mobile/bidi/TabBar",
 	"dojox/mobile/bidi/TabBarButton",
 	"dojox/mobile/bidi/TextBox",
+	"dojox/mobile/bidi/ToolBarButton",
 	"dojox/mobile/bidi/Tooltip",
 	"dojox/mobile/bidi/TreeView",
 	"dojox/mobile/bidi/ValuePickerSlot"

@@ -98,6 +98,7 @@ mobile = [
 	"dojox/mobile/transition",
 	"dojox/mobile/TransitionEvent",
 	"dojox/mobile/TreeView", // experimental
+	"dojox/mobile/uacss",
 	"dojox/mobile/ValuePicker",
 	"dojox/mobile/ValuePickerDatePicker",
 	"dojox/mobile/ValuePickerSlot",
