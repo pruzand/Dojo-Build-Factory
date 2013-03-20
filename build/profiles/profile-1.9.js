@@ -141,6 +141,23 @@ var profile = (function(){
 					"dojo/store/util/QueryResults",
 					"dojo/store/util/SimpleQueryEngine"
 				]
+			},
+
+			"dojo/gridx-desktop-layer":{
+				include: use("gridx_desktop"),
+				exclude: [
+					"dojo/core-web-layer",
+					"dojo/dijit-layer"
+				]
+			},
+
+			"dojo/gridx-mobile-layer":{
+				include: use("gridx_mobile"),
+				exclude: [
+					"dojo/core-web-layer",
+					"dojo/mobile-ui-layer",
+					"dojo/dijit-layer"
+				]
 			}
 		}
 	};	

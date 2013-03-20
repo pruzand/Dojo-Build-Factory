@@ -25,8 +25,25 @@ var profile = {
 	//"noref" : true,
 	
 	packages:[
-		{ name:"dojo"		 , location:"./src/dojo"		},
-		{ name:"dojox"		 , location:"./src/dojox"		},
-		{ name:"dijit"		 , location:"./src/dijit"		}
+		{ name:"dojo", location:"./src/dojo"},
+		{ name:"dojox", location:"./src/dojox"},
+		{ name:"dijit", location:"./src/dijit"},
+		{
+			name:"gridx",
+			location:"./src/gridx-1.1",
+			resourceTags: {
+				ignore: function(filename, mid){
+					return /gridx\/gallery\//.test(mid) || /gridx\/mobile\/util\//.test(mid);
+				},
+				test: function(filename, mid){
+					return /\/tests\//.test(mid);
+				},
+				amd: function(filename, mid){
+					return !/\/tests\//.test(mid) &&
+						/\.js$/.test(filename) &&
+						!/\w+_\w+/.test(filename);
+				}
+			}
+		}
 	]
 }
