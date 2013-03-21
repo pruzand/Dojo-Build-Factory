@@ -305,9 +305,9 @@ __layersFeatures = {};
                 <property name="outputFileName" value="${profileFile}" />
             </else>
         </if>
-        <zip destfile="${targetDir}/${outputFileName}-uncompressed.zip" basedir="${targetDir}/compressed">
+        <zip destfile="${targetDir}/${outputFileName}-uncompressed.zip" basedir="${targetDir}/uncompressed">
         </zip>
-        <zip destfile="${targetDir}/${outputFileName}-compressed.zip" basedir="${targetDir}/uncompressed">
+        <zip destfile="${targetDir}/${outputFileName}-compressed.zip" basedir="${targetDir}/compressed">
         </zip>
 
     </target>
