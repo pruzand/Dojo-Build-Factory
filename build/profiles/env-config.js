@@ -30,7 +30,7 @@ var profile = {
 		{ name:"dijit", location:"./src/dijit"},
 		{
 			name:"gridx",
-			location:"./src/gridx-1.1",
+			location:"./src/gridx",
 			resourceTags: {
 				ignore: function(filename, mid){
 					return /gridx\/gallery\//.test(mid) || /gridx\/mobile\/util\//.test(mid);
