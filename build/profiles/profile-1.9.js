@@ -39,12 +39,26 @@ var profile = (function(){
 					"dojo/i18n"
 				]
 			},
-			
+
+			"dojo/dnd-layer":{
+				include: use("dojo_dnd"),
+				exclude: [
+					"dojo/core-web-layer"
+				]
+			},
+
+			"dojo/dojo-datasources-layer":{
+				include: use("dojo_datasources"),
+				exclude: [
+					"dojo/core-web-layer"
+				]
+			},
+
 			"dojo/mobile-ui-layer":{
 				include: use("mobile"),
 				exclude: [
-				    "dojo/core-web-layer",
-				    "dojo/mobile-bidi-layer"
+					"dojo/core-web-layer",
+					"dojo/mobile-bidi-layer"
 				]
 			},
 
