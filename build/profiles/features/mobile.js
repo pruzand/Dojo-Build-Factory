@@ -1,7 +1,4 @@
 mobile = [
-	"dojox/css3/fx",
-	"dojox/css3/transit",
-	"dojox/css3/transition",
 	"dojox/mobile",
 	"dojox/mobile/_base",
 	"dojox/mobile/_ComboBoxMenu",
