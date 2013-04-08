@@ -58,5 +58,8 @@ dojo_core_web = [
 	"dojo/topic",
 	"dojo/touch",
 	"dojo/uacss",
-	"dojo/window"
+	"dojo/window",
+	"dojo/store/util/QueryResults",
+	"dojo/store/util/SimpleQueryEngine",
+	"dojo/store/Memory"
 ];
