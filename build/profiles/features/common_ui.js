@@ -33,5 +33,7 @@ common_ui = [
 	"dijit/registry", // mobile, treemap
 	"dijit/ToolbarSeparator", // calendar
 	"dijit/Tooltip", // charting,
-	"dijit/Toolbar"	// calendar
+	"dijit/Toolbar",	// calendar,
+	"dojox/widget/Selection",
+	"dojox/widget/_Invalidating"
 ];
