@@ -1,0 +1,20 @@
+dijit_editor = [
+	"dijit/_editor/_Plugin",
+	"dijit/_editor/html",
+	"dijit/_editor/range",
+	"dijit/_editor/RichText",
+	"dijit/_editor/selection",
+	"dijit/_editor/nls/commands",
+	"dijit/_editor/nls/FontChoice",
+	"dijit/_editor/plugins/AlwaysShowToolbar",
+	"dijit/_editor/plugins/EnterKeyHandling",
+	"dijit/_editor/plugins/FontChoice",
+	"dijit/_editor/plugins/FullScreen",
+	"dijit/_editor/plugins/LinkDialog",
+	"dijit/_editor/plugins/NewPage",
+	"dijit/_editor/plugins/Print",
+	"dijit/_editor/plugins/TabIndent",
+	"dijit/_editor/plugins/TextColor",
+	"dijit/_editor/plugins/ToggleDir",
+	"dijit/_editor/plugins/ViewSource"
+];
