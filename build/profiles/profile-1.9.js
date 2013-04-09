@@ -138,22 +138,19 @@ var profile = (function(){
 			"dojo/dijit-layer":{
 				include: use("dijit"),
 				exclude:[
-				    "dojo/data/util/filter",
-				    "dojo/data/util/sorter",
 					"dojo/core-web-layer",
-					"dojo/dnd/autoscroll",
-					"dojo/dnd/Avatar",
-					"dojo/dnd/common",
-					"dojo/dnd/Manager",
-					"dojo/dnd/move",
-					"dojo/dnd/Moveable",
-					"dojo/dnd/Mover",
-					"dojo/dnd/TimedMoveable",
+					"dojo/dnd-layer",
+					"dojo/dojo-datasources-layer",
 					"dojo/html",
-					"dojo/nls/colors",
-					"dojo/store/Memory",
-					"dojo/store/util/QueryResults",
-					"dojo/store/util/SimpleQueryEngine"
+					"dojo/nls/colors"
+				]
+			},
+
+			"dojo/dijit-editor":{
+				include: use("dijit_editor"),
+				exclude: [
+					"dojo/core-web-layer",
+					"dojo/dijit-layer"
 				]
 			},
 
