@@ -14,9 +14,11 @@ var profile = {
 	"cssOptimize"			  : "comments.keepLines",
 	"mini"					  : true,
 	"webkitMobile"			  : true,
-	// specificy a list of locale to generate flattened nls bundle, or set
+	// specificies a list of locale to generate flattened nls bundle, or set
 	// it to null to rely on new 1.7 behavior
 	"localeList"			  : "en-us",
+	// specifies the flattened bundles to copy in the layers (it avoids a separate file and separate request)
+	//"includeLocales"		  : ["en-us"],
 	
 	// comment out these options if you load the layers with <script> tag (and you should not!)
 	// instead of require(..) them.
