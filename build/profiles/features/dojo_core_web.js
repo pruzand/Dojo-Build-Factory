@@ -40,6 +40,7 @@ dojo_core_web = [
 	"dojo/fx/easing",
 	"dojo/has",
 	"dojo/hash",
+	"dojo/html",
 	//"dojo/i18n", //: see http://bugs.dojotoolkit.org/ticket/14947
 	"dojo/io-query",
 	"dojo/json",
