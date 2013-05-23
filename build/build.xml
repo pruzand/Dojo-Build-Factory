@@ -4,9 +4,9 @@
 	<target name="init">
 
 		<!-- Mobile resources -->
-		<property name="mobileThemes" value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css" />
-		<property name="mobileCompatThemes" value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css" />
-		<property name="mobileCompatResDir" value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat" />
+		<property name="mobileThemes" value="dojox/mobile/themes/android/android.css,dojox/mobile/themes/blackberry/blackberry.css,dojox/mobile/themes/iphone/iphone.css,dojox/mobile/themes/iphone/ipad.css,dojox/mobile/themes/holodark/holodark.css,dojox/mobile/themes/windows/windows.css" />
+		<property name="mobileCompatThemes" value="dojox/mobile/themes/android/android-compat.css,dojox/mobile/themes/blackberry/blackberry-compat.css,dojox/mobile/themes/iphone/iphone-compat.css,dojox/mobile/themes/iphone/ipad-compat.css,dojox/mobile/themes/windows/windows-compat.css" />
+		<property name="mobileCompatResDir" value="dojox/mobile/themes/android/compat,dojox/mobile/themes/blackberry/compat,dojox/mobile/themes/iphone/compat,dojox/mobile/themes/holodark/compat,dojox/mobile/themes/windows/compat" />
 		
 		<!-- Comment or remove (value has no effect) this property to *not* concat bundles with their layer -->
 		<property name="concatBundleInLayer" value="true"/>
@@ -184,7 +184,7 @@ __layersFeatures = {};
 		</for>
 		<!-- dijit and images resources -->
 		<echo message="Copying mobile dijit resources..." />
-		<for list="android,blackberry,iphone" param="os">
+		<for list="android,blackberry,iphone,windows,holodark" param="os">
 			<sequential>
 				<copy todir="${targetDir}/compressed/dojox/mobile/themes/@{os}/dijit" failonerror="false" verbose="true" overwrite="true">
 					<fileset dir="${tmpDir}/dojox/mobile/themes/@{os}/dijit" includes="**/*" excludes="**/*.less" />
