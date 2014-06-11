@@ -142,6 +142,7 @@ __layersFeatures = {};
 			<sequential>
 				<echo message="File: @{file}.js" />
 				<copy file="${tmpDir}/@{file}.js" toFile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true" />
+				<copy file="${tmpDir}/@{file}.js.map" toFile="${targetDir}/compressed/@{file}.js.map" overwrite="true" verbose="true" />
 				<copy file="${tmpDir}/@{file}.js.uncompressed.js" toFile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true" />
 			</sequential>
 		</for>
