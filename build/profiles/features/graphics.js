@@ -21,6 +21,7 @@ graphics = [
 	"dojox/gfx/shape",
 	"dojox/gfx/svg",
 	"dojox/gfx/svgext",
+	"dojox/gfx/svg_mask",
 	"dojox/gfx/utils",
 	//"dojox/gfx/VectorText",
 	"dojox/gfx/move"

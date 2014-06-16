@@ -1,7 +1,7 @@
 var profile = (function(){
 	return {
 		staticHasFeatures: {
-			
+
 			// The trace & log APIs are used for debugging the loader, so we don�t need them in the build
 			'dojo-trace-api':0,
 			// Disables the logging code of the loader
@@ -79,11 +79,11 @@ var profile = (function(){
 				    "dojo/mobile-ui-layer"
 				]
 			},
-			
+
 			"dojo/core-web-layer": {
 				include: use("dojo_core_web", "common_ui")
 			},
-			
+
 			"dojo/graphics-layer": {
 				include: use("graphics"),
 				exclude: [
@@ -118,14 +118,14 @@ var profile = (function(){
 					"dojo/mobile-ui-layer"
 				]
 			},
-			
+
 			"dojo/treemap-layer": {
 				include: use("treemap"),
 				exclude:[
 					"dojo/core-web-layer"
 				]
 			},
-			
+
 			"dojo/dgauges-layer":{
 				include: use("dgauges"),
 				exclude:[
@@ -134,7 +134,7 @@ var profile = (function(){
 					"dojo/graphics-layer"
 				]
 			},
-			
+
 			"dojo/dijit-layer":{
 				include: use("dijit"),
 				exclude:[
@@ -160,16 +160,7 @@ var profile = (function(){
 					"dojo/core-web-layer",
 					"dojo/dijit-layer"
 				]
-			},
-
-			"dojo/gridx-mobile-layer":{
-				include: use("gridx_mobile"),
-				exclude: [
-					"dojo/core-web-layer",
-					"dojo/mobile-ui-layer",
-					"dojo/dijit-layer"
-				]
 			}
 		}
-	};	
+	};
 })();
