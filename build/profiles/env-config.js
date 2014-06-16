@@ -35,7 +35,7 @@ var profile = {
 			location:"./src/gridx",
 			resourceTags: {
 				ignore: function(filename, mid){
-					return /gridx\/gallery\//.test(mid) || /gridx\/mobile\/util\//.test(mid);
+					return /gridx\/gallery\//.test(mid);
 				},
 				test: function(filename, mid){
 					return /\/tests\//.test(mid);
@@ -48,4 +48,4 @@ var profile = {
 			}
 		}
 	]
-}
+};
