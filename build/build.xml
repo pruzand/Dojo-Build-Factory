@@ -129,7 +129,7 @@ __layersFeatures = {};
     	]]>
 		</script>
 		<echo message="layeredModules: ${layeredModules}" />
-		<echo message="uncpompressd modules: ${uncompressedLayered}"/>
+		<echo message="uncompressed modules: ${uncompressedLayered}"/>
 		<echo message="layersFiles: ${layersFiles}" />
 	</target>
 
@@ -142,7 +142,6 @@ __layersFeatures = {};
 			<sequential>
 				<echo message="File: @{file}.js" />
 				<copy file="${tmpDir}/@{file}.js" toFile="${targetDir}/compressed/@{file}.js" overwrite="true" verbose="true" />
-				<copy file="${tmpDir}/@{file}.js.map" toFile="${targetDir}/compressed/@{file}.js.map" overwrite="true" verbose="true" />
 				<copy file="${tmpDir}/@{file}.js.uncompressed.js" toFile="${targetDir}/uncompressed/@{file}.js" overwrite="true" verbose="true" />
 			</sequential>
 		</for>
@@ -274,11 +273,11 @@ __layersFeatures = {};
 			<mapper type="regexp" from="(.*).uncompressed.js" to="\1" />
 		</copy>
 		<copy todir="${targetDir}/uncompressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt,${layeredTemplates}" />
+			<fileset dir="${tmpDir}" excludes="**/*.js,**/*.less,${layeredModules},**/mobile/**,build-report.txt,${layeredTemplates},**/*.map" />
 		</copy>
 		<!-- compressed -->
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
-			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt,${layeredTemplates}" includes="**/*" />
+			<fileset dir="${tmpDir}" excludes="${layeredModules},dijit/resources/*.js,**/*.js.uncompressed.js,**/*.less,**/mobile/**,build-report.txt,${layeredTemplates},**/*.map" includes="**/*" />
 		</copy>
 		<copy todir="${targetDir}/compressed" overwrite="true" verbose="true" includeEmptyDirs="false">
 			<fileset dir="${tmpDir}" excludes="${layeredModules},**/*.js.uncompressed.js" includes="**/mobile/*.js" />
